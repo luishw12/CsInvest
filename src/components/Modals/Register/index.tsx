@@ -77,15 +77,17 @@ async function handleRegister(e: any, month?: number) {
   const bruteProfit = e.sellPrice
     ? Number(e.sellPrice) - Number(e.buyPrice)
     : 0;
-  const realProfit = Number(e.sellPrice) * 0.91 - Number(e.buyPrice);
-  const porcentage = realProfit / Number(e.sellPrice);
+  const realProfit = e.sellPrice
+    ? Number(e.sellPrice) * 0.91 - Number(e.buyPrice)
+    : 0;
+  const porcentage = e.sellPrice ? realProfit / Number(e.sellPrice) : 0;
 
   if (nameMonth) {
     try {
       await addDoc(collection(db, nameMonth), {
         name: e.name,
         buyPrice: Number(e.buyPrice),
-        sellPrice: Number(e.sellPrice),
+        sellPrice: e.sellPrice ? Number(e.sellPrice) : 0,
         marketUrl: e.marketUrl,
         bruteProfit: bruteProfit,
         realProfit: realProfit,

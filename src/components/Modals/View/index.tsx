@@ -20,9 +20,6 @@ const columns: TableObjectDto[] = [
 
 export default function ModalView({ open, setOpen, month, data }: ModalView) {
   if (!open || !data) return;
-
-  console.log(data);
-
   const nameMonth = months.find((m) => m.number === month)?.name;
 
   return (
