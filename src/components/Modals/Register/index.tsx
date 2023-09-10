@@ -2,7 +2,9 @@
 import { Form, Input, Button } from "design-system-toshyro";
 import { Dispatch, SetStateAction } from "react";
 
-import { collection, addDoc } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
+
+import { collection, setDoc, doc } from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { months } from "@/components/Calender";
 import { toast } from "react-toastify";
@@ -71,8 +73,18 @@ export default function ModalRegister({ open, setOpen, month }: ModalProps) {
   );
 }
 
-async function handleRegister(e: any, month?: number) {
+export async function handleRegister(e: any, month?: number, id?: string) {
+  if (!month) {
+    console.error("O mês não foi especificado.");
+    return; // Encerra a função se o mês não estiver especificado
+  }
+
   const nameMonth = months.find((m) => m.number === month)?.name;
+
+  if (!nameMonth) {
+    console.error("Mês inválido ou não encontrado.");
+    return; // Encerra a função se o nome do mês não for encontrado
+  }
 
   const bruteProfit = e.sellPrice
     ? Number(e.sellPrice) - Number(e.buyPrice)
@@ -80,24 +92,28 @@ async function handleRegister(e: any, month?: number) {
   const realProfit = e.sellPrice
     ? Number(e.sellPrice) * 0.91 - Number(e.buyPrice)
     : 0;
-  const porcentage = e.sellPrice ? realProfit / Number(e.sellPrice) : 0;
+  const percentage = e.sellPrice
+    ? Math.round((realProfit / Number(e.sellPrice)) * 10000) / 100
+    : 0;
 
-  if (nameMonth) {
-    try {
-      await addDoc(collection(db, nameMonth), {
-        name: e.name,
-        buyPrice: Number(e.buyPrice),
-        sellPrice: e.sellPrice ? Number(e.sellPrice) : 0,
-        marketUrl: e.marketUrl,
-        bruteProfit: bruteProfit,
-        realProfit: realProfit,
-        porcentage: porcentage,
-        highlights: 0,
-      });
+  try {
+    const docData = {
+      name: e.name,
+      buyPrice: Number(e.buyPrice),
+      sellPrice: e.sellPrice ? Number(e.sellPrice) : 0,
+      marketUrl: e.marketUrl,
+      bruteProfit: bruteProfit,
+      realProfit: realProfit,
+      percentage: percentage,
+      highlights: 0,
+    };
 
-      toast.success("Item cadastrado com sucesso!");
-    } catch (e: any) {
-      toast.error("Erro ao adicionar item: ", e);
-    }
+    await setDoc(doc(collection(db, nameMonth), id ? id : uuidv4()), docData);
+
+    if (!id) return toast.success("Item cadastrado com sucesso!");
+    toast.success("Item editado com sucesso!");
+  } catch (error) {
+    if (!id) return toast.error("Erro ao adicionar o item.");
+    toast.error("Erro ao editar o item.");
   }
 }

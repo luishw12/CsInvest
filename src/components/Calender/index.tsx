@@ -66,7 +66,10 @@ function MonthSection({ title, number, currentMonth }: MonthSectionProps) {
       let getInfos: any = [];
 
       col.docs.map((doc: any) => {
-        getInfos.push(doc._document.data.value.mapValue.fields);
+        getInfos.push({
+          id: doc.id,
+          ...doc._document.data.value.mapValue.fields,
+        });
       });
 
       setInfos(getInfos);
