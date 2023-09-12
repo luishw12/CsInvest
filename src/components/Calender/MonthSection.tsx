@@ -109,6 +109,7 @@ export default function MonthSection({
           month={monthSelected}
           data={infos}
           user={user}
+          userDb={userDb}
         />
       </>
 

@@ -30,6 +30,7 @@ export default function ModalView({
   month,
   data,
   user,
+  userDb,
 }: ModalView) {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [viewImageOpen, setViewImageOpen] = useState<boolean>(false);
@@ -46,6 +47,7 @@ export default function ModalView({
         month={month}
         data={dataUpdate}
         user={user}
+        userDb={userDb}
       />
     );
 
