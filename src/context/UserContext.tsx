@@ -24,6 +24,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
+  }, []);
+
+  useEffect(() => {
     if (user) {
       const collectionRef = collection(db, user.uid);
 
@@ -33,7 +36,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         });
       });
     }
-  }, []);
+  }, [user]);
 
   return (
     <UserContext.Provider

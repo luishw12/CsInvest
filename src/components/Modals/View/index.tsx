@@ -38,8 +38,6 @@ export default function ModalView({
   const [itemImage, setItemImage] = useState<string>("");
   const [itemName, setItemName] = useState<string>("");
 
-  if (!open || !data) return;
-
   if (editOpen)
     return (
       <ModalUpdate
@@ -62,6 +60,8 @@ export default function ModalView({
       />
     );
 
+  if (!open || !data) return;
+  
   const nameMonth = months.find((m) => m.number === month)?.name;
   const year = new Date().getFullYear().toString();
 
@@ -105,8 +105,8 @@ export default function ModalView({
               <Th>
                 <button
                   onClick={() => {
-                    setEditOpen(true);
                     setDataUpdate(item);
+                    setEditOpen(true);
                     setOpen(false);
                   }}
                 >
