@@ -1,28 +1,28 @@
 "use client";
 import { Form, Input, Button } from "design-system-toshyro";
-import { Dispatch, SetStateAction } from "react";
 
-import { collection, setDoc, doc, addDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  DocumentData,
+} from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { months } from "@/components/Calender";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { User } from "firebase/auth";
-
-export interface ModalProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  month?: number;
-  user: User | null;
-}
+import { ModalProps } from "../interfaces";
 
 export default function ModalRegister({
   open,
   setOpen,
   month,
   user,
+  userDb,
 }: ModalProps) {
-  if (!open) return;
+  if (!open || !user || !userDb) return;
 
   return (
     <div className="absolute h-screen w-screen top-0 left-0 bg-black bg-opacity-30 flex items-center justify-center">
@@ -60,7 +60,7 @@ export default function ModalRegister({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month, user!);
+              handleRegister(e, month, user, userDb);
               setOpen(false);
             }}
             title="Adicionar"
@@ -77,6 +77,7 @@ export async function handleRegister(
   e: any,
   month?: number,
   user?: User,
+  userDb?: DocumentData,
   id?: string
 ) {
   const nameMonth = months.find((m) => m.number === month)?.name;
@@ -86,7 +87,7 @@ export async function handleRegister(
     ? parseFloat(e.sellPrice) - parseFloat(e.buyPrice)
     : 0;
   const realProfit = e.sellPrice
-    ? parseFloat(e.sellPrice) * 0.91 - parseFloat(e.buyPrice)
+    ? parseFloat(e.sellPrice) * userDb!.sellTax - parseFloat(e.buyPrice)
     : 0;
   const percentage = e.sellPrice
     ? parseFloat(
