@@ -2,20 +2,26 @@
 import { Form, Input, Button } from "design-system-toshyro";
 import { Dispatch, SetStateAction } from "react";
 
-import { v4 as uuidv4 } from "uuid";
-
-import { collection, setDoc, doc } from "firebase/firestore";
+import { collection, setDoc, doc, addDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { months } from "@/components/Calender";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { User } from "firebase/auth";
 
 export interface ModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   month?: number;
+  user: User | null;
 }
 
-export default function ModalRegister({ open, setOpen, month }: ModalProps) {
+export default function ModalRegister({
+  open,
+  setOpen,
+  month,
+  user,
+}: ModalProps) {
   if (!open) return;
 
   return (
@@ -28,12 +34,6 @@ export default function ModalRegister({ open, setOpen, month }: ModalProps) {
         <Input
           name={"marketUrl"}
           label="Link da skin"
-          validation={{ required: "Este campo é obrigatório" }}
-          width="col-span-12"
-        />
-        <Input
-          name={"name"}
-          label="Nome"
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
@@ -60,7 +60,7 @@ export default function ModalRegister({ open, setOpen, month }: ModalProps) {
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month);
+              handleRegister(e, month, user!);
               setOpen(false);
             }}
             title="Adicionar"
@@ -73,47 +73,76 @@ export default function ModalRegister({ open, setOpen, month }: ModalProps) {
   );
 }
 
-export async function handleRegister(e: any, month?: number, id?: string) {
-  if (!month) {
-    console.error("O mês não foi especificado.");
-    return; // Encerra a função se o mês não estiver especificado
-  }
-
+export async function handleRegister(
+  e: any,
+  month?: number,
+  user?: User,
+  id?: string
+) {
   const nameMonth = months.find((m) => m.number === month)?.name;
-
-  if (!nameMonth) {
-    console.error("Mês inválido ou não encontrado.");
-    return; // Encerra a função se o nome do mês não for encontrado
-  }
+  const year = new Date().getFullYear().toString();
 
   const bruteProfit = e.sellPrice
-    ? Number(e.sellPrice) - Number(e.buyPrice)
+    ? parseFloat(e.sellPrice) - parseFloat(e.buyPrice)
     : 0;
   const realProfit = e.sellPrice
-    ? Number(e.sellPrice) * 0.91 - Number(e.buyPrice)
+    ? parseFloat(e.sellPrice) * 0.91 - parseFloat(e.buyPrice)
     : 0;
   const percentage = e.sellPrice
-    ? Math.round((realProfit / Number(e.sellPrice)) * 10000) / 100
+    ? parseFloat(
+        Math.round((realProfit / parseFloat(e.buyPrice)) * 10000) / 100 + ""
+      )
     : 0;
 
+  async function getItemInfos() {
+    try {
+      const urlParts = new URL(e.marketUrl);
+      const pathParts = urlParts.pathname.split("/").filter(Boolean);
+      const appID = pathParts[2];
+      const marketHashName = pathParts[3];
+
+      const apiKeyParam = new URLSearchParams({
+        api_key: "GtsSVDMldcm_rRGk0gbwbZgsiY0",
+      });
+
+      const apiUrl = `https://api.steamapis.com/market/item/${appID}/${marketHashName}?${apiKeyParam}`;
+
+      const response = await axios.get(apiUrl);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return null;
+    }
+  }
+
   try {
+    const infos = await getItemInfos();
+
     const docData = {
-      name: e.name,
-      buyPrice: Number(e.buyPrice),
-      sellPrice: e.sellPrice ? Number(e.sellPrice) : 0,
+      name: infos.market_name,
+      buyPrice: parseFloat(e.buyPrice),
+      sellPrice: e.sellPrice ? parseFloat(e.sellPrice) : 0,
       marketUrl: e.marketUrl,
       bruteProfit: bruteProfit,
       realProfit: realProfit,
       percentage: percentage,
-      highlights: 0,
+      highlights: 0.0,
+      image: infos.image,
     };
 
-    await setDoc(doc(collection(db, nameMonth), id ? id : uuidv4()), docData);
+    if (id) {
+      const docRef = doc(db, user!.uid, year, nameMonth!, id); // itemId é o ID exclusivo do item a ser editado
+      await updateDoc(docRef, docData);
+      toast.success("Item editado com sucesso!");
+      return;
+    }
 
-    if (!id) return toast.success("Item cadastrado com sucesso!");
-    toast.success("Item editado com sucesso!");
+    await addDoc(collection(db, user!.uid, year, nameMonth!), docData);
+    toast.success("Item cadastrado com sucesso!");
   } catch (error) {
-    if (!id) return toast.error("Erro ao adicionar o item.");
-    toast.error("Erro ao editar o item.");
+    if (id) return toast.error("Erro ao editar o item.");
+    toast.error("Erro ao adicionar o item.");
+
+    console.error(error);
   }
 }

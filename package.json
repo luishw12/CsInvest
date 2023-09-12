@@ -13,6 +13,8 @@
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
+    "axios": "^1.5.0",
+    "cheerio": "^1.0.0-rc.12",
     "design-system-toshyro": "^0.2.3-beta",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
@@ -27,6 +29,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/url-parse": "^1.4.9",
     "@types/uuid": "^9.0.3"
   }
 }

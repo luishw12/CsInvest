@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import { BsEye } from "react-icons/bs";
 import { AiOutlinePlusSquare } from "react-icons/ai";
+import { CgSpinnerTwo } from "react-icons/cg";
 import ModalRegister from "../Modals/Register";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase/firebaseConfig";
 import ModalView from "../Modals/View";
 import { toast } from "react-toastify";
+import { User } from "firebase/auth";
 
 export const months = [
   { abrev: "Jan", name: "Janeiro", number: 1 },
@@ -23,7 +25,11 @@ export const months = [
   { abrev: "Dez", name: "Dezembro", number: 12 },
 ];
 
-export default function Calender() {
+interface CalenderProps {
+  user: User | null;
+}
+
+export default function Calender({ user }: CalenderProps) {
   const date = new Date();
   const currentMonth = date.getMonth() + 1;
 
@@ -36,6 +42,7 @@ export default function Calender() {
             title={month.name}
             number={month.number}
             currentMonth={currentMonth}
+            user={user}
           />
         );
       })}
@@ -47,9 +54,15 @@ interface MonthSectionProps {
   title: string;
   number: number;
   currentMonth: number;
+  user: User | null;
 }
 
-function MonthSection({ title, number, currentMonth }: MonthSectionProps) {
+function MonthSection({
+  title,
+  number,
+  currentMonth,
+  user,
+}: MonthSectionProps) {
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [registerOpen, setRegisterOpen] = useState<boolean>(false);
   const [monthSelected, setMonthSelected] = useState<number>();
@@ -60,37 +73,37 @@ function MonthSection({ title, number, currentMonth }: MonthSectionProps) {
   const [infos, setInfos] = useState<any>();
 
   const month = months.find((m) => m.number === number);
+  const year = new Date().getFullYear().toString();
 
   useEffect(() => {
-    onSnapshot(collection(db, title), (col) => {
-      let getInfos: any = [];
+    if (user) {
+      const collectionRef = collection(db, user!.uid, year, month!.name);
 
-      col.docs.map((doc: any) => {
-        getInfos.push({
-          id: doc.id,
-          ...doc._document.data.value.mapValue.fields,
+      onSnapshot(collectionRef, (querySnapshot) => {
+        const documents: any = [];
+
+        querySnapshot.forEach((docSnapshot) => {
+          documents.push({ ...docSnapshot.data(), id: docSnapshot.id });
         });
+        setInfos(documents);
       });
-
-      setInfos(getInfos);
-    });
-  }, []);
+    }
+  }, [user]);
 
   useEffect(() => {
+    setInvestedAmount(0);
+    setProfit(0);
     let invested = 0;
-    let profit = 0;
-    infos
-      ? infos.map((info: any) => {
-          invested +=
-            Number(info.buyPrice.doubleValue) ||
-            Number(info.buyPrice.integerValue);
-          setInvestedAmount(invested);
-          profit +=
-            Number(info.realProfit.doubleValue) ||
-            Number(info.realProfit.integerValue);
-          setProfit(profit);
-        })
-      : 0;
+    let prof = 0;
+    if (infos) {
+      infos.map((info: any) => {
+        invested += info.buyPrice + info.highlights;
+        setInvestedAmount(invested);
+        prof += info.realProfit;
+        setProfit(prof);
+      });
+      return;
+    }
   }, [infos]);
 
   return (
@@ -99,18 +112,23 @@ function MonthSection({ title, number, currentMonth }: MonthSectionProps) {
         currentMonth === number ? "border-2 m-[-2px]" : ""
       }`}
     >
-      <ModalRegister
-        open={registerOpen}
-        setOpen={setRegisterOpen}
-        month={monthSelected}
-      />
+      {/* Modais */}
+      <>
+        <ModalRegister
+          open={registerOpen}
+          setOpen={setRegisterOpen}
+          month={monthSelected}
+          user={user}
+        />
 
-      <ModalView
-        open={viewOpen}
-        setOpen={setViewOpen}
-        month={monthSelected}
-        data={infos}
-      />
+        <ModalView
+          open={viewOpen}
+          setOpen={setViewOpen}
+          month={monthSelected}
+          data={infos}
+          user={user}
+        />
+      </>
 
       {/* Title */}
       <div className="flex items-center border-b text-lg justify-between px-3 py-1.5 bg-blue-300">
@@ -149,29 +167,39 @@ function MonthSection({ title, number, currentMonth }: MonthSectionProps) {
 
       {/* Body */}
       <div className="h-[calc(100%-41px)] flex flex-col justify-between p-4 bg-gray-200">
-        <div className="w-full grid grid-cols-2">
-          <p>Quantidade</p>
-          <p className="text-right">{infos ? infos.length : 0}</p>
-        </div>
-        <div className="w-full grid grid-cols-2">
-          <p>% de Lucro</p>
-          <p className="text-right">
-            {investedAmount > 0
-              ? Math.round((profit / investedAmount) * 10000) / 100
-              : 0}
-            %
-          </p>
-        </div>
-        <div className="w-full grid grid-cols-2">
-          <p>Valor Investido</p>
-          <p className="text-right text-red-600">{formatBrl(investedAmount)}</p>
-        </div>
-        <div className="w-full grid grid-cols-2">
-          <p className="font-semibold">Lucro Total</p>
-          <p className="text-right text-green-600 font-semibold">
-            {formatBrl(profit)}
-          </p>
-        </div>
+        {infos ? (
+          <>
+            <div className="w-full grid grid-cols-2">
+              <p>Quantidade</p>
+              <p className="text-right">{infos.length}</p>
+            </div>
+            <div className="w-full grid grid-cols-2">
+              <p>% de Lucro</p>
+              <p className="text-right">
+                {investedAmount > 0
+                  ? Math.round((profit / investedAmount) * 10000) / 100
+                  : 0}
+                %
+              </p>
+            </div>
+            <div className="w-full grid grid-cols-2">
+              <p>Valor Investido</p>
+              <p className="text-right text-red-600">
+                {formatBrl(investedAmount)}
+              </p>
+            </div>
+            <div className="w-full grid grid-cols-2">
+              <p className="font-semibold">Lucro Total</p>
+              <p className="text-right text-green-600 font-semibold">
+                {formatBrl(profit)}
+              </p>
+            </div>
+          </>
+        ) : (
+          <div className="h-full flex justify-center items-center">
+            <CgSpinnerTwo className="animate-spin" size={28} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,28 +1,33 @@
 "use client";
-import { signOut } from "firebase/auth";
+import { User } from "firebase/auth";
 import { BsGraphUp } from "react-icons/bs";
-import { HiLogout } from "react-icons/hi";
-import { auth } from "../../../firebase/firebaseConfig";
+import Link from "next/link";
+import UserMenu from "./UserMenu";
 
-export default function Navbar() {
+interface NavbarProps {
+  user: User | null;
+}
+
+export default function Navbar({ user }: NavbarProps) {
   return (
     <>
-      <div className="py-5 px-16 flex items-center justify-between border-b-2 bg-white bg-opacity-25">
-        <BsGraphUp size={20} />
-
-        <div className="flex gap-4">
-          <button className="font-medium hover:bg-gray-300 px-3 py-2 rounded-lg">
-            Dashboard
-          </button>
+      <div className="h-[82px] px-16 flex items-center justify-between border-b-2 border-gray-400 bg-white bg-opacity-25">
+        <div className="w-[200px] h-full flex items-center">
+          <BsGraphUp size={20} />
         </div>
 
-        <button
-          type="button"
-          onClick={() => signOut(auth)}
-          className="hover:bg-gray-300 p-2 rounded-lg"
-        >
-          <HiLogout size={20} />
-        </button>
+        <div className="flex gap-4">
+          <Link
+            href="/dashboard"
+            className="font-medium hover:bg-gray-300 px-3 py-2 rounded-lg"
+          >
+            Dashboard
+          </Link>
+        </div>
+
+        <div className="w-[200px] h-full flex items-center justify-end">
+          <UserMenu user={user} />
+        </div>
       </div>
     </>
   );

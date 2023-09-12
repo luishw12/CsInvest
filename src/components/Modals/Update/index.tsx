@@ -12,6 +12,7 @@ export default function ModalUpdate({
   setOpen,
   month,
   data,
+  user,
 }: ModalUpdate) {
   if (!open || !data) return;
 
@@ -25,14 +26,14 @@ export default function ModalUpdate({
         <Input
           name={"marketUrl"}
           label="Link da skin"
-          defaultValue={data.marketUrl.stringValue}
+          defaultValue={data.marketUrl}
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
         <Input
           name={"name"}
           label="Nome"
-          defaultValue={data.name.stringValue}
+          defaultValue={data.name}
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
@@ -40,7 +41,7 @@ export default function ModalUpdate({
           name={"buyPrice"}
           label="Valor da compra"
           type="number"
-          defaultValue={data.buyPrice.integerValue || data.buyPrice.doubleValue}
+          defaultValue={data.buyPrice}
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
@@ -48,9 +49,7 @@ export default function ModalUpdate({
           name={"sellPrice"}
           label="Valor da Venda"
           type="number"
-          defaultValue={
-            data.sellPrice.integerValue || data.sellPrice.doubleValue
-          }
+          defaultValue={data.sellPrice}
           width="col-span-6"
         />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
@@ -63,7 +62,7 @@ export default function ModalUpdate({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month, data.id);
+              handleRegister(e, month, user!, data.id);
               setOpen(false);
             }}
             title="Adicionar"
