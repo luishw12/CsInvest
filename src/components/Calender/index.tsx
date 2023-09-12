@@ -1,6 +1,7 @@
 "use client";
 import { User } from "firebase/auth";
 import MonthSection from "./MonthSection";
+import { DocumentData } from "firebase/firestore";
 
 export const months = [
   { abrev: "Jan", name: "Janeiro", number: 1 },
@@ -19,10 +20,11 @@ export const months = [
 
 interface CalenderProps {
   user: User | null;
+  userDb?: DocumentData;
   year: number;
 }
 
-export default function Calender({ user, year }: CalenderProps) {
+export default function Calender({ user, year, userDb }: CalenderProps) {
   return (
     <div className="grid grid-cols-4 w-full h-full overflow-hidden gap-5">
       {months.map((month, i) => {
@@ -32,6 +34,7 @@ export default function Calender({ user, year }: CalenderProps) {
             title={month.name}
             number={month.number}
             user={user}
+            userDb={userDb}
             year={year}
           />
         );

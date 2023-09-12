@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import { DocumentData } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 
 interface ModalProps {
@@ -6,6 +7,7 @@ interface ModalProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   month?: number;
   user: User | null;
+  userDb?: DocumentData;
 }
 
 interface ModalUpdate extends ModalProps {

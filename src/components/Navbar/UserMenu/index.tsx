@@ -1,5 +1,5 @@
 import { User, signOut } from "firebase/auth";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
 import { PiGearSix } from "react-icons/pi";
@@ -9,9 +9,10 @@ import { auth } from "../../../../firebase/firebaseConfig";
 
 interface UserMenuProps {
   user: User | null;
+  setOpenConfig: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function UserMenu({ user }: UserMenuProps) {
+export default function UserMenu({ user, setOpenConfig }: UserMenuProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   if (!user) return;
@@ -37,7 +38,13 @@ export default function UserMenu({ user }: UserMenuProps) {
             open ? "" : "-translate-y-full"
           }`}
         >
-          <button className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full">
+          <button
+            onClick={() => {
+              setOpenConfig(true);
+              setOpen(false);
+            }}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full"
+          >
             <PiGearSix size={20} />
             <p>Configurações</p>
           </button>

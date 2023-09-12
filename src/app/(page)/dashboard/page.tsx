@@ -9,7 +9,7 @@ export default function Dashboard() {
   const [calenderYear, setCalenderYear] = useState<number>(
     new Date().getFullYear()
   );
-  const { user } = useUser();
+  const { user, userDb } = useUser();
   return (
     <div className="h-[calc(100%-82px)] flex flex-col items-center justify-center p-10 pt-0">
       <div className="p-6 flex items-center gap-4">
@@ -27,7 +27,7 @@ export default function Dashboard() {
           />
         </button>
       </div>
-      <Calender user={user} year={calenderYear} />
+      <Calender user={user} year={calenderYear} userDb={userDb} />
     </div>
   );
 }

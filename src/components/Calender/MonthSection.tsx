@@ -4,7 +4,7 @@ import { BsEye } from "react-icons/bs";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import { CgSpinnerTwo } from "react-icons/cg";
 import ModalRegister from "../Modals/Register";
-import { collection, onSnapshot } from "firebase/firestore";
+import { DocumentData, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase/firebaseConfig";
 import ModalView from "../Modals/View";
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ interface MonthSectionProps {
   title: string;
   number: number;
   user: User | null;
+  userDb?: DocumentData;
   year: number;
 }
 
@@ -22,6 +23,7 @@ export default function MonthSection({
   title,
   number,
   user,
+  userDb,
   year,
 }: MonthSectionProps) {
   const [loading, setLoading] = useState<boolean>(true);
@@ -98,6 +100,7 @@ export default function MonthSection({
           setOpen={setRegisterOpen}
           month={monthSelected}
           user={user}
+          userDb={userDb}
         />
 
         <ModalView

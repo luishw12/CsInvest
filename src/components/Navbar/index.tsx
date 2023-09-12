@@ -3,14 +3,18 @@ import { User } from "firebase/auth";
 import { BsGraphUp } from "react-icons/bs";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
+import Configurations from "../Modals/Configurations";
+import { useState } from "react";
 
 interface NavbarProps {
   user: User | null;
 }
 
 export default function Navbar({ user }: NavbarProps) {
+  const [openConfig, setOpenConfig] = useState<boolean>(false);
   return (
     <>
+      <Configurations user={user} open={openConfig} setOpen={setOpenConfig} />
       <div className="h-[82px] px-16 flex items-center justify-between border-b-2 border-gray-400 bg-white bg-opacity-25">
         <div className="w-[200px] h-full flex items-center">
           <BsGraphUp size={20} />
@@ -26,7 +30,7 @@ export default function Navbar({ user }: NavbarProps) {
         </div>
 
         <div className="w-[200px] h-full flex items-center justify-end">
-          <UserMenu user={user} />
+          <UserMenu user={user} setOpenConfig={setOpenConfig} />
         </div>
       </div>
     </>
