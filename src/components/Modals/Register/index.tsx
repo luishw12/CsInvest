@@ -22,7 +22,7 @@ export default function ModalRegister({
   user,
   userDb,
 }: ModalProps) {
-  if (!open || !user) return;
+  if (!open || !user || !userDb) return;
 
   return (
     <div className="absolute h-screen w-screen top-0 left-0 bg-black bg-opacity-30 flex items-center justify-center">
@@ -87,7 +87,7 @@ export async function handleRegister(
     ? parseFloat(e.sellPrice) - parseFloat(e.buyPrice)
     : 0;
   const realProfit = e.sellPrice
-    ? parseFloat(e.sellPrice) * userDb!.sellTax - parseFloat(e.buyPrice)
+    ? parseFloat(e.sellPrice) * (1 - userDb!.sellTax) - parseFloat(e.buyPrice)
     : 0;
   const percentage = e.sellPrice
     ? parseFloat(
