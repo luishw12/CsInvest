@@ -1,20 +1,13 @@
 "use client";
 import { Form, Input, Button } from "design-system-toshyro";
-import { Dispatch, SetStateAction } from "react";
 
-import { collection, setDoc, doc, addDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, addDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { months } from "@/components/Calender";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { User } from "firebase/auth";
-
-export interface ModalProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  month?: number;
-  user: User | null;
-}
+import { ModalProps } from "../interfaces";
 
 export default function ModalRegister({
   open,

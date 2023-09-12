@@ -34,7 +34,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       >
         <div
           className={`border-2 border-gray-400 bg-gray-100 rounded-b-xl duration-300 ease-in-out -mt-0.5 overflow-hidden ${
-            open ? "-translate-y-full" : ""
+            open ? "" : "-translate-y-full"
           }`}
         >
           <button className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full">

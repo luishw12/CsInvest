@@ -1,11 +1,8 @@
 "use client";
 import { Form, Input, Button } from "design-system-toshyro";
 
-import { ModalProps, handleRegister } from "../Register";
-
-interface ModalUpdate extends ModalProps {
-  data: any;
-}
+import { handleRegister } from "../Register";
+import { ModalUpdate } from "../interfaces";
 
 export default function ModalUpdate({
   open,
