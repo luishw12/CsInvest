@@ -77,8 +77,6 @@ export default function ModalView({
               return;
             }
 
-            console.log(item);
-
             const highlights =
               type === "add" ? item.highlights + 2 : item.highlights - 2;
 
