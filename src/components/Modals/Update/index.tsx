@@ -10,6 +10,7 @@ export default function ModalUpdate({
   month,
   data,
   user,
+  userDb,
 }: ModalUpdate) {
   if (!open || !data) return;
 
@@ -59,7 +60,7 @@ export default function ModalUpdate({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month, user!, data.id);
+              handleRegister(e, month, user!, userDb, data.id);
               setOpen(false);
             }}
             title="Adicionar"
