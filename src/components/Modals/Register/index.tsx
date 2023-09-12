@@ -22,7 +22,7 @@ export default function ModalRegister({
   user,
   userDb,
 }: ModalProps) {
-  if (!open || !user || !userDb) return;
+  if (!open || !user) return;
 
   return (
     <div className="absolute h-screen w-screen top-0 left-0 bg-black bg-opacity-30 flex items-center justify-center">
@@ -111,7 +111,6 @@ export async function handleRegister(
       const response = await axios.get(apiUrl);
       return response.data;
     } catch (error) {
-      console.error("Error fetching data:", error);
       return null;
     }
   }
@@ -143,7 +142,5 @@ export async function handleRegister(
   } catch (error) {
     if (id) return toast.error("Erro ao editar o item.");
     toast.error("Erro ao adicionar o item.");
-
-    console.error(error);
   }
 }
