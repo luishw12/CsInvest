@@ -15,7 +15,6 @@ import {
   collection,
   doc,
   onSnapshot,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";

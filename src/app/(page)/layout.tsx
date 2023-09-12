@@ -2,7 +2,7 @@
 import Navbar from "@/components/Navbar";
 import { LayoutProps } from "../(auth)/layout";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase/firebaseConfig";
 import { useUser } from "@/context/UserContext";
