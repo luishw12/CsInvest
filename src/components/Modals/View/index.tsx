@@ -4,6 +4,7 @@ import { formatBrl, months } from "@/components/Calender";
 
 import { AiOutlineEye } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
+import { BsPencilSquare } from "react-icons/bs";
 
 import { useState } from "react";
 import ModalUpdate from "../Update";
@@ -63,7 +64,7 @@ export default function ModalView({
     );
 
   if (!open || !data) return;
-  
+
   const nameMonth = months.find((m) => m.number === month)?.name;
   const year = new Date().getFullYear().toString();
 
@@ -142,11 +143,21 @@ export default function ModalView({
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
+                      setDataUpdate(item);
+                      setEditOpen(true);
+                      setOpen(false);
+                    }}
+                    className="p-1.5 bg-orange-400 hover:bg-orange-500 rounded-md text-white"
+                  >
+                    <BsPencilSquare size={16} />
+                  </button>
+                  <button
+                    onClick={() => {
                       setItemImage(item.image);
                       setItemName(item.name);
                       setViewImageOpen(true);
                     }}
-                    className="p-1.5 bg-gray-400 hover:bg-gray-500 rounded-md text-white"
+                    className="p-1.5 bg-gray-500 hover:bg-gray-600 rounded-md text-white"
                   >
                     <AiOutlineEye size={16} />
                   </button>
@@ -155,7 +166,7 @@ export default function ModalView({
                       handleDelete(nameMonth, item.id, user);
                       if (data.length == 1) setOpen(false);
                     }}
-                    className="p-1.5 bg-red-400 hover:bg-red-500 rounded-md text-white"
+                    className="p-1.5 bg-red-500 hover:bg-red-600 rounded-md text-white"
                   >
                     <BiTrashAlt size={16} />
                   </button>

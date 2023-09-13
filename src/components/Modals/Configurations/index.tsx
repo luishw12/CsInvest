@@ -80,7 +80,7 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
           </div>
           <div className="col-span-12">
             <Button
-              onSubmit={(e) => handleSubmit(e, user, infos)}
+              onSubmit={(e) => handleSubmit(e, user, setOpen, infos)}
               title="Salvar"
               full
             />
@@ -91,7 +91,12 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
   );
 }
 
-async function handleSubmit(e: any, user: User, infos?: DocumentData) {
+async function handleSubmit(
+  e: any,
+  user: User,
+  setOpen: (i: boolean) => any,
+  infos?: DocumentData
+) {
   try {
     // Atualizar o displayName, email e telefone do usuário
     await updateProfile(user, {
@@ -110,6 +115,8 @@ async function handleSubmit(e: any, user: User, infos?: DocumentData) {
 
     const docRef = doc(db, user.uid, infos!.id); // itemId é o ID exclusivo do item a ser editado
     await updateDoc(docRef, docData);
+
+    setOpen(false);
 
     toast.success("Informações atualizadas com sucesso!");
   } catch (err: any) {
