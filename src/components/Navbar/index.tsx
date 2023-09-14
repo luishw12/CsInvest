@@ -5,6 +5,7 @@ import Link from "next/link";
 import UserMenu from "./UserMenu";
 import Configurations from "../Modals/Configurations";
 import { useState } from "react";
+import Simulation from "../Modals/Simulation";
 
 interface NavbarProps {
   user: User | null;
@@ -12,9 +13,16 @@ interface NavbarProps {
 
 export default function Navbar({ user }: NavbarProps) {
   const [openConfig, setOpenConfig] = useState<boolean>(false);
+  const [openSimulation, setOpenSimulation] = useState<boolean>(false);
+
   return (
     <>
       <Configurations user={user} open={openConfig} setOpen={setOpenConfig} />
+      <Simulation
+        user={user}
+        open={openSimulation}
+        setOpen={setOpenSimulation}
+      />
       <div className="h-[82px] px-16 flex items-center justify-between border-b-2 border-gray-400 bg-white bg-opacity-25">
         <div className="w-[200px] h-full flex items-center">
           <BsGraphUp size={20} />
@@ -30,7 +38,11 @@ export default function Navbar({ user }: NavbarProps) {
         </div>
 
         <div className="w-[200px] h-full flex items-center justify-end">
-          <UserMenu user={user} setOpenConfig={setOpenConfig} />
+          <UserMenu
+            user={user}
+            setOpenConfig={setOpenConfig}
+            setOpenSimulation={setOpenSimulation}
+          />
         </div>
       </div>
     </>
