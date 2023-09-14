@@ -2,6 +2,7 @@ import { User, signOut } from "firebase/auth";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
+import { VscGraph } from "react-icons/vsc";
 import { PiGearSix } from "react-icons/pi";
 import { HiLogout } from "react-icons/hi";
 
@@ -10,9 +11,14 @@ import { auth } from "../../../../firebase/firebaseConfig";
 interface UserMenuProps {
   user: User | null;
   setOpenConfig: Dispatch<SetStateAction<boolean>>;
+  setOpenSimulation: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function UserMenu({ user, setOpenConfig }: UserMenuProps) {
+export default function UserMenu({
+  user,
+  setOpenConfig,
+  setOpenSimulation,
+}: UserMenuProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   if (!user) return;
@@ -38,6 +44,16 @@ export default function UserMenu({ user, setOpenConfig }: UserMenuProps) {
             open ? "" : "-translate-y-full"
           }`}
         >
+          <button
+            onClick={() => {
+              setOpenSimulation(true);
+              setOpen(false);
+            }}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full"
+          >
+            <VscGraph size={20} />
+            <p>Simulador</p>
+          </button>
           <button
             onClick={() => {
               setOpenConfig(true);

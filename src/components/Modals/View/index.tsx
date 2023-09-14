@@ -117,9 +117,11 @@ export default function ModalView({
                 </button>
               </Th>
               <Td align="right">{formatBrl(item.buyPrice)}</Td>
-              <Td align="right">{formatBrl(item.sellPrice)}</Td>
+              <Td align="right">
+                {item.sellPrice ? formatBrl(item.sellPrice) : "-"}
+              </Td>
               <Td align="center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-center">
                   <button
                     type="button"
                     onClick={() => editHightlights("remove")}
@@ -137,8 +139,12 @@ export default function ModalView({
                   </button>
                 </div>
               </Td>
-              <Td align="right">{formatBrl(item.realProfit)}</Td>
-              <Td align="center">{item.percentage}%</Td>
+              <Td align="right">
+                {item.sellPrice ? formatBrl(item.realProfit) : "-"}
+              </Td>
+              <Td align="center">
+                {item.sellPrice ? formatBrl(item.percentage) + "%" : "-"}
+              </Td>
               <Td align="right">
                 <div className="flex gap-2">
                   <button
