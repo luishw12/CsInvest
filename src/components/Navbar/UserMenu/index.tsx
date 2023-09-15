@@ -2,7 +2,7 @@ import { User, signOut } from "firebase/auth";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
-import { VscGraph } from "react-icons/vsc";
+import { LuCalculator } from "react-icons/lu";
 import { PiGearSix } from "react-icons/pi";
 import { HiLogout } from "react-icons/hi";
 
@@ -51,8 +51,8 @@ export default function UserMenu({
             }}
             className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full"
           >
-            <VscGraph size={20} />
-            <p>Simulador</p>
+            <LuCalculator size={20} />
+            <p>Calculadora</p>
           </button>
           <button
             onClick={() => {
