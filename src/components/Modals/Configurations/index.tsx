@@ -66,6 +66,7 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
             <InputMask
               name={"phone"}
               label="Telefone"
+              disabled
               type="cel"
               width="col-span-6"
               defaultValue={user.phoneNumber!}
@@ -135,5 +136,6 @@ async function handleSubmit(
     toast.success("Informações atualizadas com sucesso!");
   } catch (err: any) {
     toast.error("Falha ao editar informações: " + err.message);
+    setLoading(false);
   }
 }
