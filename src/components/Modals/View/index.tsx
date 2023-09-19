@@ -28,6 +28,7 @@ const columns: TableObjectDto[] = [
 export default function ModalView({
   open,
   setOpen,
+  setOrderBy,
   month,
   data,
   user,

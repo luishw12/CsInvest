@@ -4,7 +4,13 @@ import { BsEye } from "react-icons/bs";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import { CgSpinnerTwo } from "react-icons/cg";
 import ModalRegister from "../Modals/Register";
-import { DocumentData, collection, onSnapshot } from "firebase/firestore";
+import {
+  DocumentData,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { db } from "../../../firebase/firebaseConfig";
 import ModalView from "../Modals/View";
 import { toast } from "react-toastify";
@@ -30,6 +36,8 @@ export default function MonthSection({
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [registerOpen, setRegisterOpen] = useState<boolean>(false);
   const [monthSelected, setMonthSelected] = useState<number>();
+
+  const [tableOrderBy, setOrderBy] = useState<string>("buyPrice");
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
@@ -59,7 +67,9 @@ export default function MonthSection({
         month!.name
       );
 
-      onSnapshot(collectionRef, (querySnapshot) => {
+      const queryData = query(collectionRef, orderBy(tableOrderBy));
+
+      onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
 
         querySnapshot.forEach((docSnapshot) => {
@@ -106,6 +116,7 @@ export default function MonthSection({
         <ModalView
           open={viewOpen}
           setOpen={setViewOpen}
+          setOrderBy={setOrderBy}
           month={monthSelected}
           data={infos}
           user={user}
