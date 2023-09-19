@@ -26,6 +26,11 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
     }
   }, [user]);
 
+  useEffect(() => {
+    setProfit(0);
+    setPercentage(0);
+  }, [open]);
+
   if (!open) return;
 
   return (
