@@ -30,7 +30,7 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
 
   return (
     <>
-      <ModalLayout title={"Simule seu lucro"} setOpen={setOpen}>
+      <ModalLayout title={"Simule seu Lucro"} setOpen={setOpen}>
         <div className="p-5">
           <Form className="grid grid-cols-12 gap-5 min-w-[500px]">
             {info ? (
@@ -79,8 +79,8 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
                     full
                     onSubmit={(e: any) => {
                       const prof =
-                        (Number(e.sellPrice) - Number(e.buyPrice)) *
-                        (1 - info.sellTax);
+                        Number(e.sellPrice) * (1 - info.sellTax) -
+                        Number(e.buyPrice);
                       const perc =
                         Math.round((prof / Number(e.buyPrice)) * 10000) / 100;
                       setProfit(prof);

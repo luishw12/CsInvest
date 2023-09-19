@@ -84,15 +84,13 @@ export async function handleRegister(
   const year = new Date().getFullYear().toString();
 
   const bruteProfit = e.sellPrice
-    ? parseFloat(e.sellPrice) - parseFloat(e.buyPrice)
+    ? Number(e.sellPrice) - Number(e.buyPrice)
     : 0;
   const realProfit = e.sellPrice
-    ? parseFloat(e.sellPrice) * (1 - userDb!.sellTax) - parseFloat(e.buyPrice)
+    ? Number(e.sellPrice) * (1 - userDb!.sellTax) - Number(e.buyPrice)
     : 0;
   const percentage = e.sellPrice
-    ? parseFloat(
-        Math.round((realProfit / parseFloat(e.buyPrice)) * 10000) / 100 + ""
-      )
+    ? Number(Math.round((realProfit / Number(e.buyPrice)) * 10000) / 100 + "")
     : 0;
 
   async function getItemInfos() {
