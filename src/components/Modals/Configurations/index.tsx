@@ -66,8 +66,8 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
             <InputMask
               name={"phone"}
               label="Telefone"
+              mask="(99) 99999-9999"
               disabled
-              type="cel"
               width="col-span-6"
               defaultValue={user.phoneNumber!}
             />
@@ -78,7 +78,7 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
                   label="Taxa de venda"
                   mask="99"
                   validation={{ required: "Este campo é obrigatório" }}
-                  defaultValue={infos.sellTax * 100}
+                  defaultValue={Math.round(infos.sellTax * 100)}
                 />
               ) : (
                 <InputMask mask="99" name={"sellTax"} label="Taxa de venda" />
