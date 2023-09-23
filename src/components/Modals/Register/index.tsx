@@ -124,7 +124,7 @@ export async function handleRegister(
       bruteProfit: bruteProfit,
       realProfit: realProfit,
       percentage: percentage,
-      highlights: 0.0,
+      highlights: e.highlights ? Number(e.highlights) : 0.0,
       image: infos.image,
     };
 
