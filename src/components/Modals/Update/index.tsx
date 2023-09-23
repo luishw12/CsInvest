@@ -50,6 +50,7 @@ export default function ModalUpdate({
           defaultValue={data.sellPrice}
           width="col-span-6"
         />
+        <Input name="highlights" hidden defaultValue={data.highlights} />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
           <Button
             onClick={() => setOpen(false)}

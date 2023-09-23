@@ -144,7 +144,7 @@ export default function ModalView({
                 {item.sellPrice ? formatBrl(item.realProfit) : "-"}
               </Td>
               <Td align="center">
-                {item.sellPrice ? formatBrl(item.percentage) + "%" : "-"}
+                {item.sellPrice ? item.percentage + "%" : "-"}
               </Td>
               <Td align="right">
                 <div className="flex gap-2">
