@@ -17,7 +17,6 @@ interface UserMenuProps {
 export default function UserMenu({
   user,
   setOpenConfig,
-  setOpenSimulation,
 }: UserMenuProps) {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -44,16 +43,6 @@ export default function UserMenu({
             open ? "" : "-translate-y-full"
           }`}
         >
-          <button
-            onClick={() => {
-              setOpenSimulation(true);
-              setOpen(false);
-            }}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full"
-          >
-            <LuCalculator size={20} />
-            <p>Calculadora</p>
-          </button>
           <button
             onClick={() => {
               setOpenConfig(true);

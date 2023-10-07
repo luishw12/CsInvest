@@ -17,6 +17,7 @@ import ModalLayout from "../_Layout";
 
 const columns: TableObjectDto[] = [
   { name: "Nome" },
+  { name: "Dia da compra", align: "center" },
   { name: "Valor Compra", align: "right" },
   { name: "Valor Venda", align: "right" },
   { name: "Destaques", align: "center" },
@@ -104,6 +105,8 @@ export default function ModalView({
             await updateDoc(docRef, docData);
           }
 
+          const buyDate = item.date ? new Date(item.date.seconds * 1000 + item.date.nanoseconds / 1000000).getDay() : "-"
+
           return (
             <tr key={key}>
               <Th>
@@ -117,6 +120,7 @@ export default function ModalView({
                   {item.name}
                 </button>
               </Th>
+              <Td align="center">{buyDate}</Td>
               <Td align="right">{formatBrl(item.buyPrice)}</Td>
               <Td align="right">
                 {item.sellPrice ? formatBrl(item.sellPrice) : "-"}

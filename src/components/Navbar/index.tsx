@@ -6,6 +6,7 @@ import UserMenu from "./UserMenu";
 import Configurations from "../Modals/Configurations";
 import { useState } from "react";
 import Simulation from "../Modals/Simulation";
+import {LuCalculator} from "react-icons/lu";
 
 interface NavbarProps {
   user: User | null;
@@ -38,11 +39,20 @@ export default function Navbar({ user }: NavbarProps) {
         </div>
 
         <div className="w-[200px] h-full flex items-center justify-end">
-          <UserMenu
-            user={user}
-            setOpenConfig={setOpenConfig}
-            setOpenSimulation={setOpenSimulation}
-          />
+            <div>
+                <button
+                    onClick={() => setOpenSimulation(true)}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
+                >
+                    <LuCalculator size={20} />
+                </button>
+            </div>
+            <UserMenu
+                user={user}
+                setOpenConfig={setOpenConfig}
+                setOpenSimulation={setOpenSimulation}
+            />
+
         </div>
       </div>
     </>

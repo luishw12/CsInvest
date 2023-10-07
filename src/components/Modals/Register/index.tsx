@@ -135,7 +135,7 @@ export async function handleRegister(
       return;
     }
 
-    await addDoc(collection(db, user!.uid, year, nameMonth!), docData);
+    await addDoc(collection(db, user!.uid, year, nameMonth!), {...docData, date: new Date(),});
     toast.success("Item cadastrado com sucesso!");
   } catch (error) {
     if (id) return toast.error("Erro ao editar o item.");
