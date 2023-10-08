@@ -105,7 +105,7 @@ export default function ModalView({
             await updateDoc(docRef, docData);
           }
 
-          const buyDate = item.date ? new Date(item.date.seconds * 1000 + item.date.nanoseconds / 1000000).getDay() : "-"
+          const buyDate = item.date && new Date(item.date.seconds * 1000);
 
           return (
             <tr key={key}>
@@ -120,7 +120,7 @@ export default function ModalView({
                   {item.name}
                 </button>
               </Th>
-              <Td align="center">{buyDate}</Td>
+              <Td align="center">{buyDate.getDate() ?? "-"}</Td>
               <Td align="right">{formatBrl(item.buyPrice)}</Td>
               <Td align="right">
                 {item.sellPrice ? formatBrl(item.sellPrice) : "-"}
