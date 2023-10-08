@@ -59,7 +59,14 @@ export default function MonthSection({
   const highlightSection = currentYear === year && currentMonth === number;
 
   useEffect(() => {
-    if(filterName) return;
+    if(filterName) {
+      let newInfos: any = [];
+      infos.forEach((info:any) => {
+        if(info.name.toLowerCase().includes(filterName.toLowerCase())) newInfos.push(info);
+      })
+      setInfos(newInfos);
+      return;
+    }
 
     setLoading(true);
     if (user) {
@@ -99,16 +106,6 @@ export default function MonthSection({
       return;
     }
   }, [infos]);
-
-  useEffect(()=> {
-    if(filterName) {
-      let newInfos: any = [];
-      infos.forEach((info:any) => {
-        if(info.name.toLowerCase().includes(filterName.toLowerCase())) newInfos.push(info);
-      })
-      setInfos(newInfos);
-    }
-  }, [filterName])
 
   return (
     <div

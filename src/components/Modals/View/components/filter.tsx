@@ -1,3 +1,4 @@
+"use client";
 import { Button, InputMask, ResetForm, Select, Input } from "design-system-toshyro";
 import { BiChevronDown } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
@@ -6,7 +7,7 @@ import {Dispatch, SetStateAction, useState} from "react";
 interface FilterProps {
   setOrderBy: Dispatch<SetStateAction<string>>;
   setFilter: Dispatch<SetStateAction<string>>;
-};
+}
 
 export default function Filter({ setOrderBy, setFilter }: FilterProps) {
   const [filterOpen, setFilterOpen] = useState<boolean>(true);
