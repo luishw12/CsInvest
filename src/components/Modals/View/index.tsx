@@ -124,7 +124,7 @@ export default function ModalView({
                     {item.name}
                   </button>
                 </Th>
-                <Td align="center">{buyDate.getDate() ?? "-"}</Td>
+                <Td align="center">{buyDate ? buyDate.getDate() : "-"}</Td>
                 <Td align="right">{formatBrl(item.buyPrice)}</Td>
                 <Td align="right">
                   {item.sellPrice ? formatBrl(item.sellPrice) : "-"}
