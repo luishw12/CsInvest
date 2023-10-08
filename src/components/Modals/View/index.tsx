@@ -75,7 +75,7 @@ export default function ModalView({
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen}>
       <>
-        {/*<Filter setOrderBy={setOrderBy} setFilter={setFilter} />*/}
+        <Filter setOrderBy={setOrderBy} setFilter={setFilter} />
         <Table columns={columns} pagination={data.length > 10}>
           {data.map((item: any, key: number) => {
             async function editHightlights(type: "add" | "remove") {
