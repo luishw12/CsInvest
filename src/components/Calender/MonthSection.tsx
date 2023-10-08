@@ -43,7 +43,7 @@ export default function MonthSection({
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
 
-  const [infos, setInfos] = useState<any>();
+  const [infos, setInfos] = useState<any>([]);
 
   const date = new Date();
   const currentMonth = date.getMonth() + 1;
