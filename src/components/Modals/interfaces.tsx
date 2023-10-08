@@ -21,6 +21,7 @@ interface ModalViewImage extends ModalProps {
 
 interface ModalView extends ModalProps {
   setOrderBy: Dispatch<SetStateAction<string>>;
+  setFilter: Dispatch<SetStateAction<string>>;
   data: any;
 }
 

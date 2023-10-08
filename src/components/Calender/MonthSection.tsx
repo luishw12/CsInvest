@@ -38,6 +38,7 @@ export default function MonthSection({
   const [monthSelected, setMonthSelected] = useState<number>();
 
   const [tableOrderBy, setOrderBy] = useState<string>("buyPrice");
+  const [filterName, setFilterName] = useState<string>("");
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
@@ -58,6 +59,8 @@ export default function MonthSection({
   const highlightSection = currentYear === year && currentMonth === number;
 
   useEffect(() => {
+    if(filterName) return;
+
     setLoading(true);
     if (user) {
       const collectionRef = collection(
@@ -78,7 +81,7 @@ export default function MonthSection({
         setInfos(documents);
       });
     }
-  }, [user, year]);
+  }, [user, year, tableOrderBy, filterName]);
 
   useEffect(() => {
     setInvestedAmount(0);
@@ -96,6 +99,16 @@ export default function MonthSection({
       return;
     }
   }, [infos]);
+
+  useEffect(()=> {
+    if(filterName) {
+      let newInfos: any = [];
+      infos.forEach((info:any) => {
+        if(info.name.toLowerCase().includes(filterName.toLowerCase())) newInfos.push(info);
+      })
+      setInfos(newInfos);
+    }
+  }, [filterName])
 
   return (
     <div
@@ -117,6 +130,7 @@ export default function MonthSection({
           open={viewOpen}
           setOpen={setViewOpen}
           setOrderBy={setOrderBy}
+          setFilter={setFilterName}
           month={monthSelected}
           data={infos}
           user={user}

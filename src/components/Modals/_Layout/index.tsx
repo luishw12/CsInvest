@@ -13,7 +13,7 @@ export default function ModalLayout({ children, title, setOpen }: ModalLayout) {
           <AiOutlineCloseSquare
             onClick={() => setOpen(false)}
             size={22}
-            className="cursor-pointer"
+            className="cursor-pointer hover:text-red-500 duration-150"
           />
         </div>
         {children}
