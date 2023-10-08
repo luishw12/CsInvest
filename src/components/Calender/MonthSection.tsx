@@ -9,7 +9,7 @@ import {
   collection,
   onSnapshot,
   orderBy,
-  query,
+  query, addDoc, doc, deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase/firebaseConfig";
 import ModalView from "../Modals/View";
@@ -42,6 +42,7 @@ export default function MonthSection({
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
+  const [income, setIncome] = useState<number>(0);
 
   const [infos, setInfos] = useState<any>([]);
 
@@ -81,10 +82,29 @@ export default function MonthSection({
 
       onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
+        const incomming: any = [];
 
         querySnapshot.forEach((docSnapshot) => {
+          const nameMonth = months.find((m) => m.number === currentMonth)?.name;
+
           documents.push({ ...docSnapshot.data(), id: docSnapshot.id });
-        });
+
+
+          if(docSnapshot.data().sellPrice <= 0) {
+            incomming.push(docSnapshot.data().percentage)
+            //setIncome()
+          }
+
+          if(number != currentMonth) {
+            if(docSnapshot.data().sellPrice <= 0) {
+              addDoc(collection(db, user!.uid, year.toString(), nameMonth!), {...docSnapshot.data()});
+              const document = doc(db, user!.uid, year.toString(), month!.name!, docSnapshot.id)
+              deleteDoc(document);
+            }
+          }
+        })
+        setIncome(incomming/incomming.length)
+
         setInfos(documents);
       });
     }
@@ -173,9 +193,13 @@ export default function MonthSection({
         {!loading ? (
           <>
             <div className="w-full grid grid-cols-2">
-              <p>Quantidade</p>
-              <p className="text-right">
-                {infos.length === 0 ? "-" : infos.length}
+              <p>Rendimento</p>
+              <p
+                className={`text-right ${
+                  investedAmount ? "text-blue-600" : "text-black"
+                }`}
+              >
+                {investedAmount ? `${percentage}%` : "-"}
               </p>
             </div>
             <div className="w-full grid grid-cols-2">
