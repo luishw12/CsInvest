@@ -1,3 +1,4 @@
+'use client';
 import { Button, InputMask, ResetForm, Select, Input } from "design-system-toshyro";
 import { BiChevronDown } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
