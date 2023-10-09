@@ -38,7 +38,6 @@ export default function MonthSection({
   const [monthSelected, setMonthSelected] = useState<number>();
 
   const [tableOrderBy, setOrderBy] = useState<string>("buyPrice");
-  const [filterName, setFilterName] = useState<string>("");
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
@@ -60,15 +59,6 @@ export default function MonthSection({
   const highlightSection = currentYear === year && currentMonth === number;
 
   useEffect(() => {
-    if(filterName) {
-      let newInfos: any = [];
-      infos.forEach((info:any) => {
-        if(info.name.toLowerCase().includes(filterName.toLowerCase())) newInfos.push(info);
-      })
-      setInfos(newInfos);
-      return;
-    }
-
     setLoading(true);
     if (user) {
       const collectionRef = collection(
@@ -82,17 +72,18 @@ export default function MonthSection({
 
       onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
-        const incomming: any = [];
+        let incomming = 0;
+        let qntIncomming = 0;
 
         querySnapshot.forEach((docSnapshot) => {
           const nameMonth = months.find((m) => m.number === currentMonth)?.name;
 
           documents.push({ ...docSnapshot.data(), id: docSnapshot.id });
 
-
-          if(docSnapshot.data().sellPrice <= 0) {
-            incomming.push(docSnapshot.data().percentage)
-            //setIncome()
+          if(docSnapshot.data().sellPrice > 0) {
+            const porcentage = docSnapshot.data().percentage
+            incomming += porcentage;
+            qntIncomming += 1;
           }
 
           if(number != currentMonth) {
@@ -103,12 +94,12 @@ export default function MonthSection({
             }
           }
         })
-        setIncome(incomming/incomming.length)
 
+        setIncome(qntIncomming === 0 ? 0 : Math.round(incomming/qntIncomming * 100) / 100);
         setInfos(documents);
       });
     }
-  }, [user, year, tableOrderBy, filterName]);
+  }, [user, year, tableOrderBy]);
 
   useEffect(() => {
     setInvestedAmount(0);
@@ -147,7 +138,6 @@ export default function MonthSection({
           open={viewOpen}
           setOpen={setViewOpen}
           setOrderBy={setOrderBy}
-          setFilter={setFilterName}
           month={monthSelected}
           data={infos}
           user={user}
@@ -199,7 +189,7 @@ export default function MonthSection({
                   investedAmount ? "text-blue-600" : "text-black"
                 }`}
               >
-                {investedAmount ? `${percentage}%` : "-"}
+                {investedAmount ? `${income}%` : "-"}
               </p>
             </div>
             <div className="w-full grid grid-cols-2">

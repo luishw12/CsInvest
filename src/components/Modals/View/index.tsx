@@ -6,7 +6,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
 import { BsPencilSquare } from "react-icons/bs";
 
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import ModalUpdate from "../Update";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
@@ -31,7 +31,6 @@ export default function ModalView({
   open,
   setOpen,
   setOrderBy,
-  setFilter,
   month,
   data,
   user,
@@ -44,7 +43,22 @@ export default function ModalView({
   const [itemImage, setItemImage] = useState<string>("");
   const [itemName, setItemName] = useState<string>("");
 
-  if (editOpen)
+  const [infos, setInfos] = useState<any>(data);
+  const [filter, setFilter] = useState<string>("");
+
+  useEffect(() => {
+    if(filter) {
+      let newInfos: any = [];
+      data.forEach((info:any) => {
+        if(info.name.toLowerCase().includes(filter.toLowerCase())) newInfos.push(info);
+      })
+      setInfos(newInfos);
+      return;
+    }
+    setInfos(data);
+  }, [data, filter]);
+
+  if (editOpen) {
     return (
       <ModalUpdate
         open={editOpen}
@@ -55,8 +69,9 @@ export default function ModalView({
         userDb={userDb}
       />
     );
+  }
 
-  if (viewImageOpen)
+  if (viewImageOpen) {
     return (
       <ModalViewImage
         open={viewImageOpen}
@@ -66,6 +81,7 @@ export default function ModalView({
         user={user}
       />
     );
+  }
 
   if (!open || !data) return;
 
@@ -77,7 +93,7 @@ export default function ModalView({
       <>
         <Filter setOrderBy={setOrderBy} setFilter={setFilter} />
         <Table columns={columns} pagination={data.length > 10}>
-          {data.map((item: any, key: number) => {
+          {infos.map((item: any, key: number) => {
             async function editHightlights(type: "add" | "remove") {
               if (type === "remove" && item.highlights == 0) {
                 toast.error(
