@@ -55,8 +55,12 @@ export default function ModalView({
       setInfos(newInfos);
       return;
     }
-    setInfos(data);
   }, [data, filter]);
+
+  useEffect(() => {
+    setFilter("");
+    setInfos(data)
+  }, [open]);
 
   if (editOpen) {
     return (
