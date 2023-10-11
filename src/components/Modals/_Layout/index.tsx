@@ -1,4 +1,4 @@
-import { AiOutlineCloseSquare } from "react-icons/ai";
+import {AiOutlineCloseCircle} from "react-icons/ai";
 import { ModalLayout } from "../interfaces";
 
 export default function ModalLayout({ children, title, setOpen }: ModalLayout) {
@@ -10,7 +10,7 @@ export default function ModalLayout({ children, title, setOpen }: ModalLayout) {
           <h2 className="text-xl font-semibold text-center col-span-12">
             {title}
           </h2>
-          <AiOutlineCloseSquare
+          <AiOutlineCloseCircle
             onClick={() => setOpen(false)}
             size={22}
             className="cursor-pointer hover:text-red-500 duration-150"
