@@ -144,6 +144,7 @@ export default function MonthSection({
           month={monthSelected}
           data={infos}
           user={user}
+          year={year}
         />
 
         <ModalView
@@ -154,6 +155,7 @@ export default function MonthSection({
           data={infos}
           user={user}
           userDb={userDb}
+          year={year}
         />
       </>
 
