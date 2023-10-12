@@ -19,8 +19,6 @@ export default function ModalAporte({
   const [infos, setInfos] = useState<DocumentData>();
   const selectedMonth = months.find(i => i.number == month)
 
-  if (!open || !user || !selectedMonth || !year) return;
-
   useEffect(() => {
     if (user) {
       const collectionRef = collection(db, user!.uid);
@@ -32,6 +30,8 @@ export default function ModalAporte({
       });
     }
   }, [user]);
+
+  if (!open || !user || !selectedMonth || !year) return;
 
   return (
     <ModalLayout setOpen={setOpen} title={`Aporte de ${selectedMonth?.name}`}>
