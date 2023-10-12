@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { BsEye } from "react-icons/bs";
-import { AiOutlinePlusSquare } from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import {AiOutlineDollarCircle, AiOutlineEye, AiOutlinePlusCircle} from "react-icons/ai";
 import { CgSpinnerTwo } from "react-icons/cg";
 import ModalRegister from "../Modals/Register";
 import {
@@ -16,6 +15,7 @@ import ModalView from "../Modals/View";
 import { toast } from "react-toastify";
 import { User } from "firebase/auth";
 import { formatBrl, months } from ".";
+import ModalAporte from "@/components/Modals/Aporte";
 
 interface MonthSectionProps {
   title: string;
@@ -33,8 +33,11 @@ export default function MonthSection({
   year,
 }: MonthSectionProps) {
   const [loading, setLoading] = useState<boolean>(true);
+
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [registerOpen, setRegisterOpen] = useState<boolean>(false);
+  const [aporteOpen, setAporteOpen] = useState<boolean>(false);
+
   const [monthSelected, setMonthSelected] = useState<number>();
 
   const [tableOrderBy, setOrderBy] = useState<string>("buyPrice");
@@ -132,6 +135,16 @@ export default function MonthSection({
           month={monthSelected}
           user={user}
           userDb={userDb}
+          year={year}
+        />
+
+        <ModalAporte
+          open={aporteOpen}
+          setOpen={setAporteOpen}
+          month={monthSelected}
+          data={infos}
+          user={user}
+          year={year}
         />
 
         <ModalView
@@ -142,6 +155,7 @@ export default function MonthSection({
           data={infos}
           user={user}
           userDb={userDb}
+          year={year}
         />
       </>
 
@@ -155,6 +169,16 @@ export default function MonthSection({
         <h5>{title}</h5>
         <div className="flex gap-2">
           <button
+              className={"hover:text-green-400 duration-100"}
+              onClick={() => {
+                setAporteOpen(true);
+                setMonthSelected(number);
+              }}
+          >
+            <AiOutlineDollarCircle size={20} />
+          </button>
+          <button
+            className={"hover:text-orange-400 duration-100"}
             onClick={() => {
               if (!infos) return;
               if (infos.length === 0)
@@ -165,15 +189,16 @@ export default function MonthSection({
               setMonthSelected(number);
             }}
           >
-            <BsEye size={18} />
+            <AiOutlineEye size={20} />
           </button>
           <button
+            className={`${highlightSection ? "hover:text-blue-300" : "hover:text-blue-400"} duration-100`}
             onClick={() => {
               setRegisterOpen(true);
               setMonthSelected(number);
             }}
           >
-            <AiOutlinePlusSquare size={20} />
+            <AiOutlinePlusCircle size={20} />
           </button>
         </div>
       </div>

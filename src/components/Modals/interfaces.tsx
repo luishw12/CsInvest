@@ -12,6 +12,11 @@ interface ModalProps {
 
 interface ModalUpdate extends ModalProps {
   data: any;
+  year: number
+}
+
+interface ModalRegister extends ModalProps {
+  year: number
 }
 
 interface ModalViewImage extends ModalProps {
@@ -22,9 +27,15 @@ interface ModalViewImage extends ModalProps {
 interface ModalView extends ModalProps {
   setOrderBy: Dispatch<SetStateAction<string>>;
   data: any;
+  year: number
 }
 
 interface ModalConfig extends ModalProps {}
+
+interface ModalAporte extends ModalProps {
+  data: any;
+  year: number
+}
 
 interface ModalLayout {
   children: JSX.Element;
@@ -39,4 +50,6 @@ export type {
   ModalProps,
   ModalConfig,
   ModalLayout,
+  ModalAporte,
+  ModalRegister
 };

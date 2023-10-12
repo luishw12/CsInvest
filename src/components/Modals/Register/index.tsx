@@ -13,15 +13,16 @@ import { months } from "@/components/Calender";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { User } from "firebase/auth";
-import { ModalProps } from "../interfaces";
+import { ModalRegister } from "../interfaces";
 
 export default function ModalRegister({
+  year,
   open,
   setOpen,
   month,
   user,
   userDb,
-}: ModalProps) {
+}: ModalRegister) {
   if (!open || !user || !userDb) return;
 
   return (
@@ -60,7 +61,7 @@ export default function ModalRegister({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month, user, userDb);
+              handleRegister(e, month, year, user, userDb);
               setOpen(false);
             }}
             title="Adicionar"
@@ -76,12 +77,12 @@ export default function ModalRegister({
 export async function handleRegister(
   e: any,
   month?: number,
+  year?: number,
   user?: User,
   userDb?: DocumentData,
-  id?: string
+  id?: string,
 ) {
   const nameMonth = months.find((m) => m.number === month)?.name;
-  const year = new Date().getFullYear().toString();
 
   const bruteProfit = e.sellPrice
     ? Number(e.sellPrice) - Number(e.buyPrice)
@@ -129,13 +130,13 @@ export async function handleRegister(
     };
 
     if (id) {
-      const docRef = doc(db, user!.uid, year, nameMonth!, id); // itemId é o ID exclusivo do item a ser editado
+      const docRef = doc(db, user!.uid, String(year!), nameMonth!, id); // itemId é o ID exclusivo do item a ser editado
       await updateDoc(docRef, docData);
       toast.success("Item editado com sucesso!");
       return;
     }
 
-    await addDoc(collection(db, user!.uid, year, nameMonth!), {...docData, date: new Date(),});
+    await addDoc(collection(db, user!.uid, String(year!), nameMonth!), {...docData, date: new Date()});
     toast.success("Item cadastrado com sucesso!");
   } catch (error) {
     if (id) return toast.error("Erro ao editar o item.");

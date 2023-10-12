@@ -35,6 +35,7 @@ export default function ModalView({
   data,
   user,
   userDb,
+  year
 }: ModalView) {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [viewImageOpen, setViewImageOpen] = useState<boolean>(false);
@@ -72,6 +73,7 @@ export default function ModalView({
         data={dataUpdate}
         user={user}
         userDb={userDb}
+        year={year}
       />
     );
   }
@@ -91,7 +93,6 @@ export default function ModalView({
   if (!open || !data) return;
 
   const nameMonth = months.find((m) => m.number === month)?.name;
-  const year = new Date().getFullYear().toString();
 
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen}>
@@ -126,7 +127,7 @@ export default function ModalView({
                 percentage: percentage,
               };
 
-              const docRef = doc(db, user!.uid, year, nameMonth!, item.id); // itemId é o ID exclusivo do item a ser editado
+              const docRef = doc(db, user!.uid, String(year!), nameMonth!, item.id); // itemId é o ID exclusivo do item a ser editado
               await updateDoc(docRef, docData);
             }
 
