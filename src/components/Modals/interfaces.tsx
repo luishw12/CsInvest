@@ -11,6 +11,7 @@ interface ModalProps {
 }
 
 interface ModalUpdate extends ModalProps {
+  setViewOpen: Dispatch<SetStateAction<boolean>>,
   data: any;
   year: number
 }

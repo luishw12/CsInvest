@@ -69,6 +69,7 @@ export default function ModalView({
       <ModalUpdate
         open={editOpen}
         setOpen={setEditOpen}
+        setViewOpen={setOpen}
         month={month}
         data={dataUpdate}
         user={user}
@@ -146,7 +147,7 @@ export default function ModalView({
                     {item.name}
                   </button>
                 </Th>
-                <Td align="center">{buyDate ? `${buyDate.getDate()} / ${buyDate.getMonth()}` : "-"}</Td>
+                <Td align="center">{buyDate ? `${buyDate.getDate()} / ${buyDate.getMonth() + 1}` : "-"}</Td>
                 <Td align="right">{formatBrl(item.buyPrice)}</Td>
                 <Td align="right">
                   {item.sellPrice ? formatBrl(item.sellPrice) : "-"}
