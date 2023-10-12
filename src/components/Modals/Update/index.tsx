@@ -7,6 +7,7 @@ import { ModalUpdate } from "../interfaces";
 export default function ModalUpdate({
   open,
   setOpen,
+  setViewOpen,
   month,
   data,
   user,
@@ -54,7 +55,10 @@ export default function ModalUpdate({
         <Input name="highlights" hidden defaultValue={data.highlights} />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
           <Button
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false)
+              setViewOpen(true);
+            }}
             title="Cancelar"
             variant="cancel"
             type="button"
@@ -64,6 +68,7 @@ export default function ModalUpdate({
             onSubmit={(e) => {
               handleRegister(e, month, year, user!, userDb, data.id);
               setOpen(false);
+              setViewOpen(true);
             }}
             title="Adicionar"
             type="button"
