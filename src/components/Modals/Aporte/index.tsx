@@ -107,8 +107,6 @@ async function handleUpdateAporte(
   const nameMonth = months.find((i) => i.number === month)?.name;
   if (!nameMonth || !infos) return;
 
-  console.log(e.aporte);
-
   try {
     // Obter uma referência ao documento do usuário
     const userDocRef = doc(db, user.uid, infos.id);
