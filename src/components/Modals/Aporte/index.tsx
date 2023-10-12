@@ -3,7 +3,7 @@ import { ModalAporte } from "../interfaces";
 import ModalLayout from "../_Layout";
 import {formatBrl, months} from "@/components/Calender";
 import {Button, Form, Input} from "design-system-toshyro";
-import {addDoc, collection, doc, DocumentData, getDoc, onSnapshot, setDoc, updateDoc} from "firebase/firestore";
+import {collection, doc, DocumentData, getDoc, onSnapshot, setDoc} from "firebase/firestore";
 import {db} from "../../../../firebase/firebaseConfig";
 import {toast} from "react-toastify";
 import {User} from "firebase/auth";
@@ -16,11 +16,10 @@ export default function ModalAporte({
   user,
   year
 }: ModalAporte) {
+  const [infos, setInfos] = useState<DocumentData>();
   const selectedMonth = months.find(i => i.number == month)
 
   if (!open || !user || !selectedMonth || !year) return;
-
-  const [infos, setInfos] = useState<DocumentData>();
 
   useEffect(() => {
     if (user) {
