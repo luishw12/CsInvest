@@ -65,13 +65,15 @@ export default function Navbar({ user }: NavbarProps) {
             </button>
           </div>
           <div>
-            <Link
-              href={infos?.sheets || ""}
-              target="_blank"
-              className="flex items-center gap-3 text-green-700 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
-            >
-              <SiGooglesheets size={20} />
-            </Link>
+            {infos?.sheets && (
+              <Link
+                href={infos.sheets}
+                target="_blank"
+                className="flex items-center gap-3 text-green-700 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
+              >
+                <SiGooglesheets size={20} />
+              </Link>
+            )}
           </div>
           <UserMenu
             user={user}
