@@ -4,9 +4,12 @@ import { BsGraphUp } from "react-icons/bs";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
 import Configurations from "../Modals/Configurations";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Simulation from "../Modals/Simulation";
 import {LuCalculator} from "react-icons/lu";
+import {SiGooglesheets} from "react-icons/si";
+import {collection, DocumentData, onSnapshot} from "firebase/firestore";
+import {db} from "../../../firebase/firebaseConfig";
 
 interface NavbarProps {
   user: User | null;
@@ -15,6 +18,20 @@ interface NavbarProps {
 export default function Navbar({ user }: NavbarProps) {
   const [openConfig, setOpenConfig] = useState<boolean>(false);
   const [openSimulation, setOpenSimulation] = useState<boolean>(false);
+
+  const [infos, setInfos] = useState<DocumentData>();
+
+  useEffect(() => {
+    if (user) {
+      const collectionRef = collection(db, user!.uid);
+
+      onSnapshot(collectionRef, (querySnapshot) => {
+        querySnapshot.forEach((docSnapshot) => {
+          setInfos({ ...docSnapshot.data(), id: docSnapshot.id });
+        });
+      });
+    }
+  }, [user]);
 
   return (
     <>
@@ -25,7 +42,7 @@ export default function Navbar({ user }: NavbarProps) {
         setOpen={setOpenSimulation}
       />
       <div className="h-[82px] px-16 flex items-center justify-between border-b-2 border-gray-400 bg-white bg-opacity-25">
-        <div className="w-[200px] h-full flex items-center">
+        <div className="w-[250px] h-full flex items-center">
           <BsGraphUp size={20} />
         </div>
 
@@ -38,21 +55,29 @@ export default function Navbar({ user }: NavbarProps) {
           </Link>
         </div>
 
-        <div className="w-[200px] h-full flex items-center justify-end">
-            <div>
-                <button
-                    onClick={() => setOpenSimulation(true)}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
-                >
-                    <LuCalculator size={20} />
-                </button>
-            </div>
-            <UserMenu
-                user={user}
-                setOpenConfig={setOpenConfig}
-                setOpenSimulation={setOpenSimulation}
-            />
-
+        <div className="w-[250px] h-full flex items-center justify-end">
+          <div>
+            <button
+              onClick={() => setOpenSimulation(true)}
+              className="flex items-center gap-3 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
+            >
+              <LuCalculator size={20} />
+            </button>
+          </div>
+          <div>
+            <Link
+              href={infos?.sheets || ""}
+              target="_blank"
+              className="flex items-center gap-3 text-green-700 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
+            >
+              <SiGooglesheets size={20} />
+            </Link>
+          </div>
+          <UserMenu
+            user={user}
+            setOpenConfig={setOpenConfig}
+            setOpenSimulation={setOpenSimulation}
+          />
         </div>
       </div>
     </>

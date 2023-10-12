@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, Input, InputMask } from "design-system-toshyro";
+import {Button, Form, Input, InputMask, InputSkeleton} from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
 import {
@@ -87,6 +87,16 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
                 %
               </div>
             </div>
+            {infos ? (
+              <Input
+                name={"sheets"}
+                label="Link Planilha"
+                defaultValue={infos.sheets}
+              />
+            ) : (
+              <InputSkeleton width={"col-span-12"} />
+            )}
+
             <div className="col-span-12">
               <Button
                 onSubmit={(e) =>
@@ -122,6 +132,7 @@ async function handleSubmit(
     const docData = {
       name: e.name,
       email: e.email,
+      sheets: e.sheets,
       phone: e.phone ? e.phone : user.phoneNumber,
       sellTax: Number(e.sellTax) / 100,
       emailVerified: user.emailVerified,
