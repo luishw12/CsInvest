@@ -43,11 +43,13 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
                 <Input
                   name={"buyPrice"}
                   label="Valor da compra"
+                  type="number"
                   width="col-span-6"
                 />
                 <Input
                   name={"sellPrice"}
                   label="Valor da venda"
+                  type="number"
                   width="col-span-6"
                 />
                 <div className="col-span-6 flex items-center justify-between font-semibold">
