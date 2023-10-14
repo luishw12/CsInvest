@@ -43,13 +43,11 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
                 <Input
                   name={"buyPrice"}
                   label="Valor da compra"
-                  type="number"
                   width="col-span-6"
                 />
                 <Input
                   name={"sellPrice"}
                   label="Valor da venda"
-                  type="number"
                   width="col-span-6"
                 />
                 <div className="col-span-6 flex items-center justify-between font-semibold">
@@ -85,11 +83,13 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
                     title="Calcular"
                     full
                     onSubmit={(e: any) => {
+                      const sellPrice = e.sellPrice.replace(",", ".");
+                      const buyPrice = e.buyPrice.replace(",", ".");
                       const prof =
-                        Number(e.sellPrice) * (1 - info.sellTax) -
-                        Number(e.buyPrice);
+                        Number(sellPrice) * (1 - info.sellTax) -
+                        Number(buyPrice);
                       const perc =
-                        Math.round((prof / Number(e.buyPrice)) * 10000) / 100;
+                        Math.round((prof / Number(buyPrice)) * 10000) / 100;
                       setProfit(prof);
                       setPercentage(perc);
                     }}
