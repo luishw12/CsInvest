@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { User } from "firebase/auth";
 import { formatBrl, months } from ".";
 import ModalAporte from "@/components/Modals/Aporte";
+import {handleUpdateAporte} from "@/components/DbFunctions/aporte-profit";
 
 interface MonthSectionProps {
   title: string;
@@ -44,17 +45,19 @@ export default function MonthSection({
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
+  const [totalAporteProfit, setTotalAporteProfit] = useState<number>(0);
   const [income, setIncome] = useState<number>(0);
 
   const [infos, setInfos] = useState<any>([]);
+  const [userInfos, setUserInfos] = useState<any>([]);
 
   const date = new Date();
   const currentMonth = date.getMonth() + 1;
   const currentYear = date.getFullYear();
 
   const percentage =
-    investedAmount > 0
-      ? Math.round((profit / investedAmount) * 10000) / 100
+    totalAporteProfit > 0
+      ? Math.round((profit / totalAporteProfit) * 10000) / 100
       : 0;
 
   const month = months.find((m) => m.number === number);
@@ -105,6 +108,48 @@ export default function MonthSection({
   }, [user, year, tableOrderBy]);
 
   useEffect(() => {
+    if (user) {
+      const collectionRef = collection(db, user!.uid);
+
+      onSnapshot(collectionRef, (querySnapshot) => {
+        querySnapshot.forEach((docSnapshot) => {
+          setUserInfos({ ...docSnapshot.data(), id: docSnapshot.id });
+        });
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if(userInfos.aporte || userInfos.profit) {
+      let continueSum = true;
+
+      let totalAporteProf = 0;
+
+      let yearAporte = year;
+      let monthAporte = currentMonth;
+
+      while (continueSum) {
+        const currentAporteMonth = months.find(i => i.number == monthAporte)!.name
+        if (userInfos["aporte" || "profit"][yearAporte][currentAporteMonth]) {
+          monthAporte -= 1;
+          if (monthAporte == 1) {
+            monthAporte = 12;
+            yearAporte -= 1;
+          }
+          if (monthAporte === currentMonth) {
+            totalAporteProf += userInfos.aporte[yearAporte][currentAporteMonth] + userInfos.profit[yearAporte][currentAporteMonth];
+            return
+          }
+          totalAporteProf += userInfos.aporte[yearAporte][currentAporteMonth];
+        } else {
+          continueSum = false;
+        }
+      }
+      setTotalAporteProfit(totalAporteProf);
+    }
+  }, [userInfos]);
+
+  useEffect(() => {
     setInvestedAmount(0);
     setProfit(0);
     let invested = 0;
@@ -120,6 +165,8 @@ export default function MonthSection({
       return;
     }
   }, [infos]);
+
+  if(user && profit > 0) handleUpdateAporte({profit: profit}, "profit", number, year, user, userInfos);
 
   return (
     <div
@@ -208,7 +255,7 @@ export default function MonthSection({
         {!loading ? (
           <>
             <div className="w-full grid grid-cols-2">
-              <p>Rendimento Médio</p>
+              <p>Rendimento</p>
               <p
                 className={`text-right ${
                   investedAmount ? "text-blue-600" : "text-black"
@@ -218,7 +265,7 @@ export default function MonthSection({
               </p>
             </div>
             <div className="w-full grid grid-cols-2">
-              <p>% de Lucro</p>
+              <p>Rentabilidade</p>
               <p
                 className={`text-right ${
                   investedAmount ? "text-blue-600" : "text-black"

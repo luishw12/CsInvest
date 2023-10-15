@@ -8,6 +8,7 @@ import {db} from "../../../../firebase/firebaseConfig";
 import {toast} from "react-toastify";
 import {User} from "firebase/auth";
 import {useEffect, useState} from "react";
+import {handleUpdateAporte} from "@/components/DbFunctions/aporte-profit";
 
 export default function ModalAporte({
   open,
@@ -50,7 +51,7 @@ export default function ModalAporte({
             title={"+R$250,00"}
             variant="cancel"
             onClick={() =>
-              handleUpdateAporte({aporte: "250"}, "add", month!, year, user, infos)}
+              handleUpdateAporte({aporte: "250"}, "aporte", month!, year, user, infos, "add")}
           />
         </div>
         <div className={"col-span-4"}>
@@ -60,7 +61,7 @@ export default function ModalAporte({
             title={"+R$500,00"}
             variant="cancel"
             onClick={() =>
-              handleUpdateAporte({aporte: "500"}, "add", month!, year, user, infos)}
+              handleUpdateAporte({aporte: "500"}, "aporte", month!, year, user, infos, "add")}
           />
         </div>
         <div className={"col-span-4"}>
@@ -70,7 +71,7 @@ export default function ModalAporte({
             title={"+R$1.000,00"}
             variant="cancel"
             onClick={() =>
-              handleUpdateAporte({aporte: "1000"}, "add", month!, year, user, infos)}
+              handleUpdateAporte({aporte: "1000"}, "aporte", month!, year, user, infos, "add")}
           />
         </div>
         <div className={"col-span-6"}>
@@ -79,7 +80,7 @@ export default function ModalAporte({
             type="button"
             title={"Remover"}
             onSubmit={(e) =>
-              handleUpdateAporte(e, "remove", month!, year, user, infos)}
+              handleUpdateAporte(e, "aporte", month!, year, user, infos, "remove")}
             color={"bg-red-500 hover:bg-red-600"} />
         </div>
         <div className={"col-span-6"}>
@@ -87,65 +88,10 @@ export default function ModalAporte({
             full
             type="button"
             onSubmit={(e) =>
-              handleUpdateAporte(e, "add", month!, year, user, infos)}
+              handleUpdateAporte(e, "aporte", month!, year, user, infos, "add")}
             title={"Adicionar"} />
         </div>
       </Form>
     </ModalLayout>
   );
-}
-
-async function handleUpdateAporte(
-    e: any,
-    type: "add" | "remove",
-    month: number,
-    year: number,
-    user: User,
-    infos?: DocumentData
-) {
-  const nameMonth = months.find((i) => i.number === month)?.name;
-  if (!nameMonth || !infos) return;
-
-  try {
-    // Obter uma referência ao documento do usuário
-    const userDocRef = doc(db, user.uid, infos.id);
-    const docSnapshot = await getDoc(userDocRef);
-
-    if (docSnapshot.exists()) {
-      const userData = docSnapshot.data();
-
-      // Verificar se o campo 'aporte' existe
-      if (!userData.aporte) {
-        userData.aporte = {};
-      }
-
-      // Verificar se o 'year' existe
-      if (!userData.aporte[year]) {
-        userData.aporte[year] = {};
-      }
-
-      // Verificar se 'nameMonth' existe
-      if (!userData.aporte[year][nameMonth]) {
-        userData.aporte[year][nameMonth] = 0;
-      }
-
-      // Atualizar o valor de 'nameMonth' com base em 'type'
-      switch (type) {
-        case "add":
-          userData.aporte[year][nameMonth] = userData.aporte[year][nameMonth] + Number(e.aporte);
-          break;
-        case "remove":
-          userData.aporte[year][nameMonth] = userData.aporte[year][nameMonth] - Number(e.aporte);
-          break;
-      }
-
-      // Atualizar o documento no Firestore
-      await setDoc(userDocRef, userData, { merge: true });
-      toast.success('Aporte atualizado com sucesso.', {autoClose: 1000});
-    } else {
-      toast.error('Documento do usuário não encontrado.');
-    }
-  } catch (error:any) {
-    toast.error('Erro ao atualizar aporte:', error);
-  }
 }
