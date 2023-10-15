@@ -255,7 +255,7 @@ export default function MonthSection({
         {!loading ? (
           <>
             <div className="w-full grid grid-cols-2">
-              <p>Rendimento</p>
+              <p>Rendimento Médio</p>
               <p
                 className={`text-right ${
                   investedAmount ? "text-blue-600" : "text-black"
