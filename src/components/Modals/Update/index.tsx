@@ -1,8 +1,8 @@
 "use client";
 import { Form, Input, Button } from "design-system-toshyro";
 
-import { handleRegister } from "../Register";
 import { ModalUpdate } from "../interfaces";
+import {handleRegister} from "@/components/DbFunctions/register-edit";
 
 export default function ModalUpdate({
   open,
