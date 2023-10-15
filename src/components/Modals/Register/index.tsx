@@ -84,11 +84,10 @@ export async function handleRegister(
 ) {
   const nameMonth = months.find((m) => m.number === month)?.name;
 
-  const bruteProfit = e.sellPrice
-    ? Number(e.sellPrice) - Number(e.buyPrice)
-    : 0;
+  const highlight = e.highlights ? Number(e.highlights) : 0.0
+
   const realProfit = e.sellPrice
-    ? Number(e.sellPrice) * (1 - userDb!.sellTax) - Number(e.buyPrice)
+    ? (Number(e.sellPrice) * (1 - userDb!.sellTax)) - (Number(e.buyPrice) + highlight)
     : 0;
   const percentage = e.sellPrice
     ? Number(Math.round((realProfit / Number(e.buyPrice)) * 10000) / 100 + "")
@@ -122,10 +121,9 @@ export async function handleRegister(
       buyPrice: parseFloat(e.buyPrice),
       sellPrice: e.sellPrice ? parseFloat(e.sellPrice) : 0,
       marketUrl: e.marketUrl,
-      bruteProfit: bruteProfit,
       realProfit: realProfit,
       percentage: percentage,
-      highlights: e.highlights ? Number(e.highlights) : 0.0,
+      highlights: highlight,
       image: infos.image,
     };
 

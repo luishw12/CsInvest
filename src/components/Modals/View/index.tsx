@@ -101,7 +101,7 @@ export default function ModalView({
         <Filter setOrderBy={setOrderBy} setFilter={setFilter} />
         <Table columns={columns} pagination={data.length > 10}>
           {infos.map((item: any, key: number) => {
-            async function editHightlights(type: "add" | "remove") {
+            async function editHighlights(type: "add" | "remove") {
               if (type === "remove" && item.highlights == 0) {
                 toast.error(
                   "Você não pode ter menos que R$0,00 de valor em destaque"
@@ -156,7 +156,7 @@ export default function ModalView({
                   <div className="flex items-center gap-2 justify-center">
                     <button
                       type="button"
-                      onClick={() => editHightlights("remove")}
+                      onClick={() => editHighlights("remove")}
                       className="w-5 h-5 bg-red-500 flex items-center justify-center rounded-md text-white"
                     >
                       -
@@ -164,7 +164,7 @@ export default function ModalView({
                     <p>{formatBrl(item.highlights)}</p>
                     <button
                       type="button"
-                      onClick={() => editHightlights("add")}
+                      onClick={() => editHighlights("add")}
                       className="w-5 h-5 bg-green-600 flex items-center justify-center rounded-md text-white"
                     >
                       +

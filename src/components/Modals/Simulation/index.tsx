@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, Input } from "design-system-toshyro";
+import { Button, Form, Input, CheckBox } from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
 import { useEffect, useState } from "react";
@@ -50,6 +50,9 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
                   label="Valor da venda"
                   width="col-span-6"
                 />
+                <div className="col-span-12">
+                  <CheckBox  name="highlight" label="Destaque" />
+                </div>
                 <div className="col-span-6 flex items-center justify-between font-semibold">
                   <p>Lucro em BRL:</p>
                   <p
@@ -85,11 +88,9 @@ export default function Simulation({ setOpen, open, user }: ModalConfig) {
                     onSubmit={(e: any) => {
                       const sellPrice = e.sellPrice.replace(",", ".");
                       const buyPrice = e.buyPrice.replace(",", ".");
-                      const prof =
-                        Number(sellPrice) * (1 - info.sellTax) -
-                        Number(buyPrice);
-                      const perc =
-                        Math.round((prof / Number(buyPrice)) * 10000) / 100;
+                      const highlight = Number(e.highlight) ? 2 : 0;
+                      const prof = (Number(sellPrice) * (1 - info.sellTax) - Number(buyPrice)) - highlight;
+                      const perc = Math.round((prof / Number(buyPrice)) * 10000) / 100;
                       setProfit(prof);
                       setPercentage(perc);
                     }}
