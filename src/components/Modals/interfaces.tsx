@@ -41,6 +41,7 @@ interface ModalAporte extends ModalProps {
 interface ModalLayout {
   children: JSX.Element;
   title: string;
+  width?: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
