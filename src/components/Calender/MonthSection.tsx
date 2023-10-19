@@ -8,7 +8,7 @@ import {
   collection,
   onSnapshot,
   orderBy,
-  query, addDoc, doc, deleteDoc,
+  query, addDoc, doc, deleteDoc, OrderByDirection,
 } from "firebase/firestore";
 import { db } from "../../../firebase/firebaseConfig";
 import ModalView from "../Modals/View";
@@ -41,7 +41,8 @@ export default function MonthSection({
 
   const [monthSelected, setMonthSelected] = useState<number>();
 
-  const [tableOrderBy, setOrderBy] = useState<string>("buyPrice");
+  const [tableOrderBy, setOrderBy] =
+    useState<{ field: string, direction: OrderByDirection }>({field: "date", direction: "desc"});
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
@@ -74,7 +75,7 @@ export default function MonthSection({
         month!.name
       );
 
-      const queryData = query(collectionRef, orderBy(tableOrderBy));
+      const queryData = query(collectionRef, orderBy(tableOrderBy.field, tableOrderBy.direction));
 
       onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
