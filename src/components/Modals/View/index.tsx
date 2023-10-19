@@ -47,17 +47,25 @@ export default function ModalView({
   const [infos, setInfos] = useState<any>(data);
   const [filter, setFilter] = useState<string>("");
 
+  const [sold, setSold] = useState<boolean>(false);
+
   useEffect(() => {
     if(filter) {
       let newInfos: any = [];
       data.forEach((info:any) => {
         if(info.name.toLowerCase().includes(filter.toLowerCase())) newInfos.push(info);
       })
+      if(sold) newInfos = newInfos.filter((i:any) => i.sellPrice > 0);
+      setInfos(newInfos);
+      return;
+    }
+    if(sold) {
+      const newInfos = data.filter((i:any) => i.sellPrice > 0);
       setInfos(newInfos);
       return;
     }
     setInfos(data)
-  }, [data, filter]);
+  }, [data, filter, sold]);
 
   useEffect(() => {
     setFilter("");
@@ -98,7 +106,7 @@ export default function ModalView({
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
-        <Filter setOrderBy={setOrderBy} setFilter={setFilter} />
+        <Filter setOrderBy={setOrderBy} setFilter={setFilter} setSold={setSold} />
         <Table columns={columns} pagination={infos.length > 10}>
           {infos.map((item: any, key: number) => {
             async function editHighlights(type: "add" | "remove") {
