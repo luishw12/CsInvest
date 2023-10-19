@@ -96,7 +96,7 @@ export default function ModalView({
   const nameMonth = months.find((m) => m.number === month)?.name;
 
   return (
-    <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen}>
+    <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
         <Filter setOrderBy={setOrderBy} setFilter={setFilter} />
         <Table columns={columns} pagination={infos.length > 10}>
