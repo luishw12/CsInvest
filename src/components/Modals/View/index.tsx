@@ -1,5 +1,5 @@
 "use client";
-import { Table, TableObjectDto, Td, Th } from "design-system-toshyro";
+import {Form, Switch, Table, TableObjectDto, Td, Th} from "design-system-toshyro";
 import { formatBrl, months } from "@/components/Calender";
 
 import { AiOutlineEye } from "react-icons/ai";
@@ -154,20 +154,13 @@ export default function ModalView({
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    <button
-                      type="button"
-                      onClick={() => editHighlights("remove")}
-                      className="w-5 h-5 bg-red-500 flex items-center justify-center rounded-md text-white"
-                    >
-                      -
-                    </button>
-                    <p>{formatBrl(item.highlights)}</p>
-                    <button
-                      type="button"
-                      onClick={() => editHighlights("add")}
-                      className="w-5 h-5 bg-green-600 flex items-center justify-center rounded-md text-white"
-                    >
-                      +
+                    <button onClick={() => {
+                      if(item.highlights == 0) editHighlights("add")
+                      if(item.highlights > 0) editHighlights("remove")
+                    }}>
+                      <Form className={""}>
+                        <Switch name={"highlight"} value={item.highlights > 0} />
+                      </Form>
                     </button>
                   </div>
                 </Td>
