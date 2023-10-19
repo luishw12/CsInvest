@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import Simulation from "../Modals/Simulation";
 import {LuCalculator} from "react-icons/lu";
 import {SiGooglesheets} from "react-icons/si";
+import {SlCalculator} from "react-icons/sl";
 import {collection, DocumentData, onSnapshot} from "firebase/firestore";
 import {db} from "../../../firebase/firebaseConfig";
 
@@ -74,6 +75,15 @@ export default function Navbar({ user }: NavbarProps) {
                 <SiGooglesheets size={20} />
               </Link>
             )}
+          </div>
+          <div>
+            <Link
+              href={"https://www.mobills.com.br/calculadoras/calculadora-juros-compostos/"}
+              target="_blank"
+              className="flex items-center gap-3 text-green-700 px-4 py-3 hover:bg-gray-200 w-full rounded-md"
+            >
+              <SlCalculator size={20}/>
+            </Link>
           </div>
           <UserMenu
             user={user}
