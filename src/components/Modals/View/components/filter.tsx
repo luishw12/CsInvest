@@ -1,20 +1,23 @@
 "use client";
-import { Button, InputMask, ResetForm, Select, Input } from "design-system-toshyro";
+import {Button, ResetForm, Select, Input, CheckBox} from "design-system-toshyro";
 import { BiChevronDown } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
 import {Dispatch, SetStateAction, useState} from "react";
+import {OrderByDirection} from "firebase/firestore";
 
 interface FilterProps {
-  setOrderBy: Dispatch<SetStateAction<string>>;
+  setOrderBy: Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
   setFilter: Dispatch<SetStateAction<string>>;
+  setSold: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function Filter({ setOrderBy, setFilter }: FilterProps) {
+export default function Filter({ setOrderBy, setFilter, setSold }: FilterProps) {
   const [filterOpen, setFilterOpen] = useState<boolean>(true);
 
   function handleSearch(e: any) {
-    setOrderBy(e.orderBy);
+    setOrderBy({field: e.orderBy, direction: e.direction});
     setFilter(e.name)
+    setSold(e.sold);
   }
 
   return (
@@ -27,8 +30,12 @@ export default function Filter({ setOrderBy, setFilter }: FilterProps) {
         <BiChevronDown className={`duration-300 ${filterOpen ? "rotate-180" : ""}`} />
       </button>
       <ResetForm className={`overflow-hidden duration-300 ease-in-out grid grid-cols-12 items-center gap-4 px-4 ${filterOpen ? "max-h-32 border-b py-2" : "max-h-0"}`}>
-        <Input label="Nome" name="name" width="col-span-6" />
-        <Select label="Ordenar Por" name="orderBy" width="col-span-4" options={OrderByOptions} />
+        <Input label="Nome" name="name" width="col-span-4" />
+        <Select label="Ordenar Por" name="orderBy" width="col-span-2" options={OrderByOptions} />
+        <Select label="Ordem" name="direction" width="col-span-2" options={DirectionOptions} />
+        <div className={"col-span-2 flex justify-center"}>
+          <CheckBox name={"sold"} label={"Vendido"} />
+        </div>
         <div className="col-span-2 h-full flex justify-end items-center">
           <Button title="Pesquisar" size="sm" onSubmit={handleSearch} />
         </div>
@@ -38,6 +45,11 @@ export default function Filter({ setOrderBy, setFilter }: FilterProps) {
 }
 
 export const OrderByOptions = [
-  { key: 'buyPrice', value: "Preço" },
   { key: 'date', value: "Data" },
+  { key: 'buyPrice', value: "Preço" },
+]
+
+export const DirectionOptions = [
+  { key: "desc", value: "Decrescente" },
+  { key: "asc", value: "Crescente" },
 ]
