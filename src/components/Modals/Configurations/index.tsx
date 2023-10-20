@@ -138,7 +138,7 @@ async function handleSubmit(
     };
 
     const docRef = doc(db, user.uid, infos!.id); // itemId é o ID exclusivo do item a ser editado
-    if(e.sheets) await updateDoc(docRef, {docData, sheets: e.sheets});
+    if(e.sheets) await updateDoc(docRef, {...docData, sheets: e.sheets});
     else await updateDoc(docRef, docData);
 
     setOpen(false);
