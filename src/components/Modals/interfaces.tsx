@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { DocumentData } from "firebase/firestore";
+import {DocumentData, OrderByDirection} from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 
 interface ModalProps {
@@ -26,7 +26,7 @@ interface ModalViewImage extends ModalProps {
 }
 
 interface ModalView extends ModalProps {
-  setOrderBy: Dispatch<SetStateAction<string>>;
+  setOrderBy: Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
   data: any;
   year: number
 }
@@ -41,6 +41,7 @@ interface ModalAporte extends ModalProps {
 interface ModalLayout {
   children: JSX.Element;
   title: string;
+  width?: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 

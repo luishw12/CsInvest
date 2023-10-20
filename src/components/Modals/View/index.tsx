@@ -1,5 +1,5 @@
 "use client";
-import { Table, TableObjectDto, Td, Th } from "design-system-toshyro";
+import {Form, Switch, Table, TableObjectDto, Td, Th} from "design-system-toshyro";
 import { formatBrl, months } from "@/components/Calender";
 
 import { AiOutlineEye } from "react-icons/ai";
@@ -47,17 +47,25 @@ export default function ModalView({
   const [infos, setInfos] = useState<any>(data);
   const [filter, setFilter] = useState<string>("");
 
+  const [sold, setSold] = useState<boolean>(false);
+
   useEffect(() => {
     if(filter) {
       let newInfos: any = [];
       data.forEach((info:any) => {
         if(info.name.toLowerCase().includes(filter.toLowerCase())) newInfos.push(info);
       })
+      if(sold) newInfos = newInfos.filter((i:any) => i.sellPrice > 0);
+      setInfos(newInfos);
+      return;
+    }
+    if(sold) {
+      const newInfos = data.filter((i:any) => i.sellPrice > 0);
       setInfos(newInfos);
       return;
     }
     setInfos(data)
-  }, [data, filter]);
+  }, [data, filter, sold]);
 
   useEffect(() => {
     setFilter("");
@@ -96,10 +104,10 @@ export default function ModalView({
   const nameMonth = months.find((m) => m.number === month)?.name;
 
   return (
-    <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen}>
+    <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
-        <Filter setOrderBy={setOrderBy} setFilter={setFilter} />
-        <Table columns={columns} pagination={data.length > 10}>
+        <Filter setOrderBy={setOrderBy} setFilter={setFilter} setSold={setSold} />
+        <Table columns={columns} pagination={infos.length > 10}>
           {infos.map((item: any, key: number) => {
             async function editHighlights(type: "add" | "remove") {
               if (type === "remove" && item.highlights == 0) {
@@ -154,20 +162,13 @@ export default function ModalView({
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    <button
-                      type="button"
-                      onClick={() => editHighlights("remove")}
-                      className="w-5 h-5 bg-red-500 flex items-center justify-center rounded-md text-white"
-                    >
-                      -
-                    </button>
-                    <p>{formatBrl(item.highlights)}</p>
-                    <button
-                      type="button"
-                      onClick={() => editHighlights("add")}
-                      className="w-5 h-5 bg-green-600 flex items-center justify-center rounded-md text-white"
-                    >
-                      +
+                    <button onClick={() => {
+                      if(item.highlights == 0) editHighlights("add")
+                      if(item.highlights > 0) editHighlights("remove")
+                    }}>
+                      <Form className={""}>
+                        <Switch name={"highlight"} value={item.highlights > 0} />
+                      </Form>
                     </button>
                   </div>
                 </Td>

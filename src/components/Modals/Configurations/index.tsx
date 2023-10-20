@@ -132,14 +132,14 @@ async function handleSubmit(
     const docData = {
       name: e.name,
       email: e.email,
-      sheets: e.sheets,
       phone: e.phone ? e.phone : user.phoneNumber,
       sellTax: Number(e.sellTax) / 100,
       emailVerified: user.emailVerified,
     };
 
     const docRef = doc(db, user.uid, infos!.id); // itemId é o ID exclusivo do item a ser editado
-    await updateDoc(docRef, docData);
+    if(e.sheets) await updateDoc(docRef, {docData, sheets: e.sheets});
+    else await updateDoc(docRef, docData);
 
     setOpen(false);
     setLoading(false);
