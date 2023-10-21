@@ -47,7 +47,6 @@ export default function ModalView({
 
   const [sold, setSold] = useState<boolean>(false);
 
-
   useEffect(() => {
     if(filter) {
       let newInfos: any = [];
@@ -69,7 +68,7 @@ export default function ModalView({
       return;
     }
     setViewItems(infos)
-  }, [infos, filter, sold, tableOrderBy]);
+  }, [filter, sold, tableOrderBy, user]);
 
   useEffect(() => {
     setFilter("");
