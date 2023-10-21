@@ -7,14 +7,14 @@ import { BiTrashAlt } from "react-icons/bi";
 import { BsPencilSquare } from "react-icons/bs";
 
 import React, {useEffect, useState} from "react";
-import ModalUpdate from "../Update";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {deleteDoc, doc, updateDoc} from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { toast } from "react-toastify";
 import { ModalView } from "../interfaces";
-import ModalViewImage from "../ItemImage";
 import ModalLayout from "../_Layout";
 import Filter from "@/components/Modals/View/components/filter";
+import {useUser} from "@/context/UserContext";
+import _ from 'lodash';
 
 const columns: TableObjectDto[] = [
   { name: "Nome" },
@@ -30,21 +30,19 @@ const columns: TableObjectDto[] = [
 export default function ModalView({
   open,
   setOpen,
-  setOrderBy,
-  month,
-  data,
-  user,
-  userDb,
-  year
 }: ModalView) {
-  const [editOpen, setEditOpen] = useState<boolean>(false);
-  const [viewImageOpen, setViewImageOpen] = useState<boolean>(false);
-  const [dataUpdate, setDataUpdate] = useState();
+  const {
+    monthSelected,
+    user,
+    infos, userDb,
+    year,
+    setDataItem,
+    setEditOpen,
+    setViewImageOpen,
+    tableOrderBy
+  } = useUser();
 
-  const [itemImage, setItemImage] = useState<string>("");
-  const [itemName, setItemName] = useState<string>("");
-
-  const [infos, setInfos] = useState<any>(data);
+  const [viewItems, setViewItems] = useState<any>(infos);
   const [filter, setFilter] = useState<string>("");
 
   const [sold, setSold] = useState<boolean>(false);
@@ -52,63 +50,41 @@ export default function ModalView({
   useEffect(() => {
     if(filter) {
       let newInfos: any = [];
-      data.forEach((info:any) => {
+      infos.forEach((info:any) => {
         if(info.name.toLowerCase().includes(filter.toLowerCase())) newInfos.push(info);
       })
       if(sold) newInfos = newInfos.filter((i:any) => i.sellPrice > 0);
-      setInfos(newInfos);
+      setViewItems(newInfos);
       return;
     }
     if(sold) {
-      const newInfos = data.filter((i:any) => i.sellPrice > 0);
-      setInfos(newInfos);
+      const newInfos = infos.filter((i:any) => i.sellPrice > 0);
+      setViewItems(newInfos);
       return;
     }
-    setInfos(data)
-  }, [data, filter, sold]);
+    if(tableOrderBy) {
+      const newInfos = _.orderBy(infos, [tableOrderBy.field], [tableOrderBy.direction]);
+      setViewItems(newInfos);
+      return;
+    }
+    setViewItems(infos)
+  }, [filter, sold, tableOrderBy, user]);
 
   useEffect(() => {
     setFilter("");
-    setInfos(data)
+    setViewItems(infos)
   }, [open]);
 
-  if (editOpen) {
-    return (
-      <ModalUpdate
-        open={editOpen}
-        setOpen={setEditOpen}
-        setViewOpen={setOpen}
-        month={month}
-        data={dataUpdate}
-        user={user}
-        userDb={userDb}
-        year={year}
-      />
-    );
-  }
+  if (!open || !infos || !viewItems) return;
 
-  if (viewImageOpen) {
-    return (
-      <ModalViewImage
-        open={viewImageOpen}
-        setOpen={setViewImageOpen}
-        image={itemImage}
-        name={itemName}
-        user={user}
-      />
-    );
-  }
-
-  if (!open || !data) return;
-
-  const nameMonth = months.find((m) => m.number === month)?.name;
+  const nameMonth = months.find((m) => m.number === monthSelected)?.name;
 
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
-        <Filter setOrderBy={setOrderBy} setFilter={setFilter} setSold={setSold} />
-        <Table columns={columns} pagination={infos.length > 10}>
-          {infos.map((item: any, key: number) => {
+        <Filter setFilter={setFilter} setSold={setSold} />
+        <Table columns={columns} pagination={viewItems.length > 10}>
+          {viewItems.map((item: any, key: number) => {
             async function editHighlights(type: "add" | "remove") {
               if (type === "remove" && item.highlights == 0) {
                 toast.error(
@@ -147,7 +123,7 @@ export default function ModalView({
                 <Th>
                   <button
                     onClick={() => {
-                      setDataUpdate(item);
+                      setDataItem(item);
                       setEditOpen(true);
                       setOpen(false);
                     }}
@@ -182,7 +158,7 @@ export default function ModalView({
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        setDataUpdate(item);
+                        setDataItem(item);
                         setEditOpen(true);
                         setOpen(false);
                       }}
@@ -192,8 +168,7 @@ export default function ModalView({
                     </button>
                     <button
                       onClick={() => {
-                        setItemImage(item.image);
-                        setItemName(item.name);
+                        setDataItem(item);
                         setViewImageOpen(true);
                       }}
                       className="p-1.5 bg-gray-500 hover:bg-gray-600 rounded-md text-white"
@@ -203,7 +178,7 @@ export default function ModalView({
                     <button
                       onClick={() => {
                         handleDelete(nameMonth, item.id, user);
-                        if (data.length == 1) setOpen(false);
+                        if (infos.length == 1) setOpen(false);
                       }}
                       className="p-1.5 bg-red-500 hover:bg-red-600 rounded-md text-white"
                     >

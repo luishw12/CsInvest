@@ -18,13 +18,7 @@ export const months = [
   { abrev: "Dez", name: "Dezembro", number: 12 },
 ];
 
-interface CalenderProps {
-  user: User | null;
-  userDb?: DocumentData;
-  year: number;
-}
-
-export default function Calender({ user, year, userDb }: CalenderProps) {
+export default function Calender() {
   return (
     <div className="grid grid-cols-4 w-full h-full overflow-hidden gap-5">
       {months.map((month, i) => {
@@ -33,9 +27,6 @@ export default function Calender({ user, year, userDb }: CalenderProps) {
             key={i}
             title={month.name}
             number={month.number}
-            user={user}
-            userDb={userDb}
-            year={year}
           />
         );
       })}

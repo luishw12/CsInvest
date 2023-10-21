@@ -7,18 +7,12 @@ import { PiGearSix } from "react-icons/pi";
 import { HiLogout } from "react-icons/hi";
 
 import { auth } from "../../../../firebase/firebaseConfig";
+import {useUser} from "@/context/UserContext";
 
-interface UserMenuProps {
-  user: User | null;
-  setOpenConfig: Dispatch<SetStateAction<boolean>>;
-  setOpenSimulation: Dispatch<SetStateAction<boolean>>;
-}
 
-export default function UserMenu({
-  user,
-  setOpenConfig,
-}: UserMenuProps) {
+export default function UserMenu() {
   const [open, setOpen] = useState<boolean>(false);
+  const {setOpenConfig, user} = useUser();
 
   if (!user) return;
 

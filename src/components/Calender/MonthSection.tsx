@@ -17,40 +17,36 @@ import { User } from "firebase/auth";
 import { formatBrl, months } from ".";
 import ModalAporte from "@/components/Modals/Aporte";
 import {handleUpdateAporte} from "@/components/DbFunctions/aporte-profit";
+import {useUser} from "@/context/UserContext";
 
 interface MonthSectionProps {
   title: string;
   number: number;
-  user: User | null;
-  userDb?: DocumentData;
-  year: number;
 }
 
 export default function MonthSection({
   title,
   number,
-  user,
-  userDb,
-  year,
 }: MonthSectionProps) {
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [viewOpen, setViewOpen] = useState<boolean>(false);
-  const [registerOpen, setRegisterOpen] = useState<boolean>(false);
-  const [aporteOpen, setAporteOpen] = useState<boolean>(false);
-
-  const [monthSelected, setMonthSelected] = useState<number>();
-
-  const [tableOrderBy, setOrderBy] =
-    useState<{ field: string, direction: OrderByDirection }>({field: "date", direction: "desc"});
+  const [monthInfos, setMonthInfos] = useState<any>();
 
   const [investedAmount, setInvestedAmount] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
   const [totalAporteProfit, setTotalAporteProfit] = useState<number>(0);
   const [income, setIncome] = useState<number>(0);
 
-  const [infos, setInfos] = useState<any>([]);
-  const [userInfos, setUserInfos] = useState<any>([]);
+  const {
+    year,
+    user,
+    setMonthSelected,
+    setAporteOpen,
+    setViewOpen,
+    setRegisterOpen,
+    tableOrderBy,
+    userDb,
+  } = useUser();
 
   const date = new Date();
   const currentMonth = date.getMonth() + 1;
@@ -75,7 +71,7 @@ export default function MonthSection({
         month!.name
       );
 
-      const queryData = query(collectionRef, orderBy(tableOrderBy.field, tableOrderBy.direction));
+      const queryData = query(collectionRef);
 
       onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
@@ -102,26 +98,15 @@ export default function MonthSection({
           }
         })
 
+        console.log(documents);
         setIncome(qntIncomming === 0 ? 0 : Math.round(incomming/qntIncomming * 100) / 100);
-        setInfos(documents);
+        setMonthInfos(documents);
       });
     }
-  }, [user, year, tableOrderBy]);
+  }, [year, user]);
 
   useEffect(() => {
-    if (user) {
-      const collectionRef = collection(db, user!.uid);
-
-      onSnapshot(collectionRef, (querySnapshot) => {
-        querySnapshot.forEach((docSnapshot) => {
-          setUserInfos({ ...docSnapshot.data(), id: docSnapshot.id });
-        });
-      });
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if(userInfos.aporte || userInfos.profit) {
+    if(userDb && (userDb.aporte || userDb.profit)) {
       let continueSum = true;
 
       let totalAporteProf = 0;
@@ -131,32 +116,32 @@ export default function MonthSection({
 
       while (continueSum) {
         const currentAporteMonth = months.find(i => i.number == monthAporte)!.name
-        if (userInfos["aporte" || "profit"][yearAporte][currentAporteMonth]) {
+        if (userDb["aporte" || "profit"][yearAporte][currentAporteMonth]) {
           monthAporte -= 1;
           if (monthAporte == 1) {
             monthAporte = 12;
             yearAporte -= 1;
           }
           if (monthAporte === currentMonth) {
-            totalAporteProf += userInfos.aporte[yearAporte][currentAporteMonth] + userInfos.profit[yearAporte][currentAporteMonth];
+            totalAporteProf += userDb.aporte[yearAporte][currentAporteMonth] + userDb.profit[yearAporte][currentAporteMonth];
             return
           }
-          totalAporteProf += userInfos.aporte[yearAporte][currentAporteMonth];
+          totalAporteProf += userDb.aporte[yearAporte][currentAporteMonth];
         } else {
           continueSum = false;
         }
       }
       setTotalAporteProfit(totalAporteProf);
     }
-  }, [userInfos]);
+  }, [userDb]);
 
   useEffect(() => {
     setInvestedAmount(0);
     setProfit(0);
     let invested = 0;
     let prof = 0;
-    if (infos) {
-      infos.map((info: any) => {
+    if (monthInfos) {
+      monthInfos.map((info: any) => {
         invested += info.buyPrice + info.highlights;
         setInvestedAmount(invested);
         prof += info.realProfit;
@@ -165,9 +150,9 @@ export default function MonthSection({
       setLoading(false);
       return;
     }
-  }, [infos]);
+  }, [monthInfos]);
 
-  if(user && profit > 0) handleUpdateAporte({profit: profit}, "profit", number, year, user, userInfos);
+  if(user && profit > 0) handleUpdateAporte({profit: profit}, "profit", number, year, user, userDb);
 
   return (
     <div
@@ -175,38 +160,6 @@ export default function MonthSection({
         highlightSection ? "border-blue-700" : "border-gray-700"
       }`}
     >
-      {/* Modais */}
-      <>
-        <ModalRegister
-          open={registerOpen}
-          setOpen={setRegisterOpen}
-          month={monthSelected}
-          user={user}
-          userDb={userDb}
-          year={year}
-        />
-
-        <ModalAporte
-          open={aporteOpen}
-          setOpen={setAporteOpen}
-          month={monthSelected}
-          data={infos}
-          user={user}
-          year={year}
-        />
-
-        <ModalView
-          open={viewOpen}
-          setOpen={setViewOpen}
-          setOrderBy={setOrderBy}
-          month={monthSelected}
-          data={infos}
-          user={user}
-          userDb={userDb}
-          year={year}
-        />
-      </>
-
       {/* Title */}
       <div
         className={`flex items-center text-lg justify-between px-3 py-1.5  text-white ${
@@ -228,8 +181,8 @@ export default function MonthSection({
           <button
             className={"hover:text-orange-400 duration-100"}
             onClick={() => {
-              if (!infos) return;
-              if (infos.length === 0)
+              if (!monthInfos) return;
+              if (monthInfos.length === 0)
                 return toast.info(
                   `Você ainda não possui items cadastrados em ${month?.name}`
                 );

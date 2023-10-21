@@ -20,7 +20,7 @@ export default function LayoutPages({ children }: LayoutProps) {
   return (
     <>
       <div className="h-full bg-gray-100">
-        <Navbar user={user} />
+        <Navbar />
         {children}
       </div>
     </>

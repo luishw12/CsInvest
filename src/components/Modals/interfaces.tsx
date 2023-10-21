@@ -5,38 +5,19 @@ import { Dispatch, SetStateAction } from "react";
 interface ModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  month?: number;
-  user: User | null;
-  userDb?: DocumentData;
 }
 
-interface ModalUpdate extends ModalProps {
-  setViewOpen: Dispatch<SetStateAction<boolean>>,
-  data: any;
-  year: number
-}
+interface ModalUpdate extends ModalProps {}
 
-interface ModalRegister extends ModalProps {
-  year: number
-}
+interface ModalRegister extends ModalProps {}
 
-interface ModalViewImage extends ModalProps {
-  image: string;
-  name: string;
-}
+interface ModalViewImage extends ModalProps {}
 
-interface ModalView extends ModalProps {
-  setOrderBy: Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
-  data: any;
-  year: number
-}
+interface ModalView extends ModalProps {}
 
 interface ModalConfig extends ModalProps {}
 
-interface ModalAporte extends ModalProps {
-  data: any;
-  year: number
-}
+interface ModalAporte extends ModalProps {}
 
 interface ModalLayout {
   children: JSX.Element;
