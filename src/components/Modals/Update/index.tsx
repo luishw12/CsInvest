@@ -3,18 +3,22 @@ import { Form, Input, Button } from "design-system-toshyro";
 
 import { ModalUpdate } from "../interfaces";
 import {handleRegister} from "@/components/DbFunctions/register-edit";
+import {useUser} from "@/context/UserContext";
 
 export default function ModalUpdate({
   open,
   setOpen,
-  setViewOpen,
-  month,
-  data,
-  user,
-  userDb,
-  year
 }: ModalUpdate) {
-  if (!open || !data) return;
+  const {
+    dataItem,
+    monthSelected,
+    user,
+    userDb,
+    year,
+    setViewOpen
+  } = useUser();
+
+  if (!open || !dataItem) return;
 
   return (
     <div className="absolute h-screen w-screen top-0 left-0 bg-black bg-opacity-30 flex items-center justify-center">
@@ -26,14 +30,14 @@ export default function ModalUpdate({
         <Input
           name={"marketUrl"}
           label="Link da skin"
-          defaultValue={data.marketUrl}
+          defaultValue={dataItem.marketUrl}
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
         <Input
           name={"name"}
           label="Nome"
-          defaultValue={data.name}
+          defaultValue={dataItem.name}
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
@@ -41,7 +45,7 @@ export default function ModalUpdate({
           name={"buyPrice"}
           label="Valor da compra"
           type="number"
-          defaultValue={data.buyPrice}
+          defaultValue={dataItem.buyPrice}
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
@@ -49,10 +53,10 @@ export default function ModalUpdate({
           name={"sellPrice"}
           label="Valor da Venda"
           type="number"
-          defaultValue={data.sellPrice}
+          defaultValue={dataItem.sellPrice}
           width="col-span-6"
         />
-        <Input name="highlights" hidden defaultValue={data.highlights} />
+        <Input name="highlights" hidden defaultValue={dataItem.highlights} />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
           <Button
             onClick={() => {
@@ -66,7 +70,7 @@ export default function ModalUpdate({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month, year, user!, userDb, data.id);
+              handleRegister(e, monthSelected, year, user!, userDb, dataItem.id);
               setOpen(false);
               setViewOpen(true);
             }}

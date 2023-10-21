@@ -19,27 +19,14 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { CgSpinnerTwo } from "react-icons/cg";
+import {useUser} from "@/context/UserContext";
 
-export default function Configurations({ user, setOpen, open }: ModalConfig) {
+export default function Configurations({ setOpen, open }: ModalConfig) {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [infos, setInfos] = useState<DocumentData>();
+  const {user, userDb} = useUser();
 
-  useEffect(() => {
-    setLoading(true);
-    if (user) {
-      const collectionRef = collection(db, user!.uid);
-
-      onSnapshot(collectionRef, (querySnapshot) => {
-        querySnapshot.forEach((docSnapshot) => {
-          setInfos({ ...docSnapshot.data(), id: docSnapshot.id });
-        });
-      });
-      setLoading(false);
-    }
-  }, [user]);
-
-  if (!open || !user) return;
+  if (!open || !user || !userDb) return;
 
   return (
     <>
@@ -72,35 +59,26 @@ export default function Configurations({ user, setOpen, open }: ModalConfig) {
               defaultValue={user.phoneNumber!}
             />
             <div className="col-span-6 relative">
-              {infos ? (
-                <InputMask
-                  name={"sellTax"}
-                  label="Taxa de venda"
-                  mask="99"
-                  validation={{ required: "Este campo é obrigatório" }}
-                  defaultValue={Math.round(infos.sellTax * 100)}
-                />
-              ) : (
-                <InputMask mask="99" name={"sellTax"} label="Taxa de venda" />
-              )}
+              <InputMask
+                name={"sellTax"}
+                label="Taxa de venda"
+                mask="99"
+                validation={{ required: "Este campo é obrigatório" }}
+                defaultValue={Math.round(userDb.sellTax * 100)}
+              />
               <div className="absolute bottom-0 right-0 font-semibold text-lg h-[40px] flex items-center mr-2.5 text-gray-500">
                 %
               </div>
             </div>
-            {infos ? (
-              <Input
-                name={"sheets"}
-                label="Link Planilha"
-                defaultValue={infos.sheets}
-              />
-            ) : (
-              <InputSkeleton width={"col-span-12"} />
-            )}
-
+            <Input
+              name={"sheets"}
+              label="Link Planilha"
+              defaultValue={userDb.sheets}
+            />
             <div className="col-span-12">
               <Button
                 onSubmit={(e) =>
-                  handleSubmit(e, user, setOpen, setLoading, infos)
+                  handleSubmit(e, user, setOpen, setLoading, userDb)
                 }
                 title="Salvar"
                 full

@@ -9,35 +9,22 @@ import {toast} from "react-toastify";
 import {User} from "firebase/auth";
 import {useEffect, useState} from "react";
 import {handleUpdateAporte} from "@/components/DbFunctions/aporte-profit";
+import {useUser} from "@/context/UserContext";
 
 export default function ModalAporte({
   open,
   setOpen,
-  month,
-  user,
-  year
 }: ModalAporte) {
-  const [infos, setInfos] = useState<DocumentData>();
-  const selectedMonth = months.find(i => i.number == month)
+  const {user, year, monthSelected, userDb} = useUser();
 
-  useEffect(() => {
-    if (user) {
-      const collectionRef = collection(db, user!.uid);
+  const selectedMonth = months.find(i => i.number == monthSelected)
 
-      onSnapshot(collectionRef, (querySnapshot) => {
-        querySnapshot.forEach((docSnapshot) => {
-          setInfos({ ...docSnapshot.data(), id: docSnapshot.id });
-        });
-      });
-    }
-  }, [user]);
-
-  if (!open || !user || !selectedMonth || !year) return;
+  if (!open || !user || !selectedMonth || !year || !userDb) return;
 
   return (
     <ModalLayout setOpen={setOpen} title={`Aporte de ${selectedMonth?.name}`}>
       <Form className="p-8 bg-white rounded-xl grid grid-cols-12 gap-5 min-w-[500px]">
-        <h3 className={"col-span-12 text-center font-bold text-3xl my-4"}>{formatBrl(infos && infos.aporte && infos.aporte[year][selectedMonth.name] || 0)}</h3>
+        <h3 className={"col-span-12 text-center font-bold text-3xl my-4"}>{formatBrl(userDb.aporte && userDb.aporte[year][selectedMonth.name] || 0)}</h3>
         <Input
           name={"aporte"}
           label="Aporte"
@@ -51,7 +38,7 @@ export default function ModalAporte({
             title={"+R$250,00"}
             variant="cancel"
             onClick={() =>
-              handleUpdateAporte({aporte: "250"}, "aporte", month!, year, user, infos, "add")}
+              handleUpdateAporte({aporte: "250"}, "aporte", monthSelected!, year, user, userDb, "add")}
           />
         </div>
         <div className={"col-span-4"}>
@@ -61,7 +48,7 @@ export default function ModalAporte({
             title={"+R$500,00"}
             variant="cancel"
             onClick={() =>
-              handleUpdateAporte({aporte: "500"}, "aporte", month!, year, user, infos, "add")}
+              handleUpdateAporte({aporte: "500"}, "aporte", monthSelected!, year, user, userDb, "add")}
           />
         </div>
         <div className={"col-span-4"}>
@@ -71,7 +58,7 @@ export default function ModalAporte({
             title={"+R$1.000,00"}
             variant="cancel"
             onClick={() =>
-              handleUpdateAporte({aporte: "1000"}, "aporte", month!, year, user, infos, "add")}
+              handleUpdateAporte({aporte: "1000"}, "aporte", monthSelected!, year, user, userDb, "add")}
           />
         </div>
         <div className={"col-span-6"}>
@@ -80,7 +67,7 @@ export default function ModalAporte({
             type="button"
             title={"Remover"}
             onSubmit={(e) =>
-              handleUpdateAporte(e, "aporte", month!, year, user, infos, "remove")}
+              handleUpdateAporte(e, "aporte", monthSelected!, year, user, userDb, "remove")}
             color={"bg-red-500 hover:bg-red-600"} />
         </div>
         <div className={"col-span-6"}>
@@ -88,7 +75,7 @@ export default function ModalAporte({
             full
             type="button"
             onSubmit={(e) =>
-              handleUpdateAporte(e, "aporte", month!, year, user, infos, "add")}
+              handleUpdateAporte(e, "aporte", monthSelected!, year, user, userDb, "add")}
             title={"Adicionar"} />
         </div>
       </Form>

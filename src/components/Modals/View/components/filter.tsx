@@ -4,15 +4,17 @@ import { BiChevronDown } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
 import {Dispatch, SetStateAction, useState} from "react";
 import {OrderByDirection} from "firebase/firestore";
+import {useUser} from "@/context/UserContext";
 
 interface FilterProps {
-  setOrderBy: Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
   setFilter: Dispatch<SetStateAction<string>>;
   setSold: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function Filter({ setOrderBy, setFilter, setSold }: FilterProps) {
+export default function Filter({ setFilter, setSold }: FilterProps) {
   const [filterOpen, setFilterOpen] = useState<boolean>(true);
+
+  const {setOrderBy} = useUser();
 
   function handleSearch(e: any) {
     setOrderBy({field: e.orderBy, direction: e.direction});

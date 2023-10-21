@@ -15,15 +15,14 @@ import axios from "axios";
 import { User } from "firebase/auth";
 import { ModalRegister } from "../interfaces";
 import {handleRegister} from "@/components/DbFunctions/register-edit";
+import {useUser} from "@/context/UserContext";
 
 export default function ModalRegister({
-  year,
   open,
   setOpen,
-  month,
-  user,
-  userDb,
 }: ModalRegister) {
+  const {user, userDb, monthSelected, year} = useUser();
+
   if (!open || !user || !userDb) return;
 
   return (
@@ -62,7 +61,7 @@ export default function ModalRegister({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, month, year, user, userDb);
+              handleRegister(e, monthSelected, year, user, userDb);
               setOpen(false);
             }}
             title="Adicionar"

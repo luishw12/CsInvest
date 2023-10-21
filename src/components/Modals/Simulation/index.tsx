@@ -7,12 +7,15 @@ import { formatBrl } from "@/components/Calender";
 import { DocumentData, collection, onSnapshot } from "firebase/firestore";
 import { CgSpinnerTwo } from "react-icons/cg";
 import { db } from "../../../../firebase/firebaseConfig";
+import {useUser} from "@/context/UserContext";
 
-export default function Simulation({ setOpen, open, user }: ModalConfig) {
+export default function Simulation({ setOpen, open}: ModalConfig) {
   const [profit, setProfit] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(0);
 
   const [info, setInfo] = useState<DocumentData>();
+
+  const {user} = useUser();
 
   useEffect(() => {
     if (user) {
