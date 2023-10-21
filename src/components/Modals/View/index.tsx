@@ -7,15 +7,14 @@ import { BiTrashAlt } from "react-icons/bi";
 import { BsPencilSquare } from "react-icons/bs";
 
 import React, {useEffect, useState} from "react";
-import ModalUpdate from "../Update";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {deleteDoc, doc, updateDoc} from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { toast } from "react-toastify";
 import { ModalView } from "../interfaces";
-import ModalViewImage from "../ItemImage";
 import ModalLayout from "../_Layout";
 import Filter from "@/components/Modals/View/components/filter";
 import {useUser} from "@/context/UserContext";
+import _ from 'lodash';
 
 const columns: TableObjectDto[] = [
   { name: "Nome" },
@@ -40,7 +39,7 @@ export default function ModalView({
     setDataItem,
     setEditOpen,
     setViewImageOpen,
-    dataItem
+    tableOrderBy
   } = useUser();
 
   const [viewItems, setViewItems] = useState<any>(infos);
@@ -64,8 +63,13 @@ export default function ModalView({
       setViewItems(newInfos);
       return;
     }
+    if(tableOrderBy) {
+      const newInfos = _.orderBy(infos, [tableOrderBy.field], [tableOrderBy.direction]);
+      setViewItems(newInfos);
+      return;
+    }
     setViewItems(infos)
-  }, [infos, filter, sold]);
+  }, [infos, filter, sold, tableOrderBy]);
 
   useEffect(() => {
     setFilter("");
@@ -165,7 +169,7 @@ export default function ModalView({
                     </button>
                     <button
                       onClick={() => {
-                        dataItem(item);
+                        setDataItem(item);
                         setViewImageOpen(true);
                       }}
                       className="p-1.5 bg-gray-500 hover:bg-gray-600 rounded-md text-white"

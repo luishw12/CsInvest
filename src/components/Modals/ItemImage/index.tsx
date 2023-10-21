@@ -9,9 +9,9 @@ export default function ModalViewImage({
   open,
   setOpen,
 }: ModalViewImage) {
-  if (!open) return;
-
   const {dataItem} = useUser();
+
+  if (!open) return;
 
   return (
     <ModalLayout setOpen={setOpen} title={dataItem.name}>

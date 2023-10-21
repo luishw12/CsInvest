@@ -71,7 +71,7 @@ export default function MonthSection({
         month!.name
       );
 
-      const queryData = query(collectionRef, orderBy(tableOrderBy.field, tableOrderBy.direction));
+      const queryData = query(collectionRef);
 
       onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
@@ -103,7 +103,7 @@ export default function MonthSection({
         setMonthInfos(documents);
       });
     }
-  }, [year, tableOrderBy, user]);
+  }, [year, user]);
 
   useEffect(() => {
     if(userDb && (userDb.aporte || userDb.profit)) {
