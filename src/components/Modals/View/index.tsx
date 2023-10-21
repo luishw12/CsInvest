@@ -43,9 +43,6 @@ export default function ModalView({
     dataItem
   } = useUser();
 
-  const [itemImage, setItemImage] = useState<string>("");
-  const [itemName, setItemName] = useState<string>("");
-
   const [viewItems, setViewItems] = useState<any>(infos);
   const [filter, setFilter] = useState<string>("");
 
@@ -75,7 +72,7 @@ export default function ModalView({
     setViewItems(infos)
   }, [open]);
 
-  if (!open || !infos) return;
+  if (!open || !infos || !viewItems) return;
 
   const nameMonth = months.find((m) => m.number === monthSelected)?.name;
 

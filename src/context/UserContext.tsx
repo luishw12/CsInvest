@@ -2,7 +2,17 @@
 import { User, onAuthStateChanged } from "firebase/auth";
 import React, {createContext, Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import { auth, db } from "../../firebase/firebaseConfig";
-import {DocumentData, collection, onSnapshot, OrderByDirection} from "firebase/firestore";
+import {
+  DocumentData,
+  collection,
+  onSnapshot,
+  OrderByDirection,
+  query,
+  orderBy,
+  addDoc,
+  doc,
+  deleteDoc
+} from "firebase/firestore";
 import Simulation from "@/components/Modals/Simulation";
 import Configurations from "@/components/Modals/Configurations";
 import ModalAporte from "@/components/Modals/Aporte";
@@ -10,6 +20,7 @@ import ModalRegister from "@/components/Modals/Register";
 import ModalView from "@/components/Modals/View";
 import ModalUpdate from "@/components/Modals/Update";
 import ModalViewImage from "@/components/Modals/ItemImage";
+import {months} from "@/components/Calender";
 
 type UserContextProps = {
   user: User | null;
@@ -83,6 +94,30 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      const nameMonth = months.find((m) => m.number === monthSelected)?.name;
+      const collectionRef = collection(
+        db,
+        user!.uid,
+        year.toString(),
+        nameMonth!
+      );
+
+      const queryData = query(collectionRef, orderBy(tableOrderBy.field, tableOrderBy.direction));
+
+      onSnapshot(queryData, (querySnapshot) => {
+        const documents: any = [];
+        querySnapshot.forEach((docSnapshot) => {
+
+
+          documents.push({...docSnapshot.data(), id: docSnapshot.id});
+        })
+        setInfos(documents);
+      });
+    }
+  }, [monthSelected]);
 
   return (
     <UserContext.Provider
