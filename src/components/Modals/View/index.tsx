@@ -68,7 +68,7 @@ export default function ModalView({
       return;
     }
     setViewItems(infos)
-  }, [filter, sold, tableOrderBy, user]);
+  }, [filter, sold, tableOrderBy, infos]);
 
   useEffect(() => {
     setFilter("");
