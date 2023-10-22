@@ -15,6 +15,7 @@ import ModalLayout from "../_Layout";
 import Filter from "@/components/Modals/View/components/filter";
 import {useUser} from "@/context/UserContext";
 import _ from 'lodash';
+import {User} from "firebase/auth";
 
 const columns: TableObjectDto[] = [
   { name: "Nome" },
@@ -77,7 +78,7 @@ export default function ModalView({
 
   if (!open || !infos || !viewItems) return;
 
-  const nameMonth = months.find((m) => m.number === monthSelected)?.name;
+  const nameMonth = months.find((m) => m.number === monthSelected)?.name!;
 
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
@@ -85,37 +86,6 @@ export default function ModalView({
         <Filter setFilter={setFilter} setSold={setSold} />
         <Table columns={columns} pagination={viewItems.length > 10}>
           {viewItems.map((item: any, key: number) => {
-            async function editHighlights(type: "add" | "remove") {
-              if (type === "remove" && item.highlights == 0) {
-                toast.error(
-                  "Você não pode ter menos que R$0,00 de valor em destaque"
-                );
-                return;
-              }
-
-              const highlights =
-                type === "add" ? item.highlights + 2 : item.highlights - 2;
-
-              const realProfit =
-                type === "add" ? item.realProfit - 2 : item.realProfit + 2;
-              const percentage =
-                Math.round((realProfit / (item.buyPrice + highlights)) * 10000) /
-                100;
-
-              const newData = { ...item };
-              delete newData.id;
-
-              const docData = {
-                ...newData,
-                highlights: highlights,
-                realProfit: realProfit,
-                percentage: percentage,
-              };
-
-              const docRef = doc(db, user!.uid, String(year!), nameMonth!, item.id); // itemId é o ID exclusivo do item a ser editado
-              await updateDoc(docRef, docData);
-            }
-
             const buyDate = item.date && new Date(item.date.seconds * 1000);
 
             return (
@@ -138,14 +108,13 @@ export default function ModalView({
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    <button onClick={() => {
-                      if(item.highlights == 0) editHighlights("add")
-                      if(item.highlights > 0) editHighlights("remove")
-                    }}>
-                      <Form className={""}>
-                        <Switch name={"highlight"} value={item.highlights > 0} />
-                      </Form>
-                    </button>
+                    {item && (
+                      <button onClick={() => editHighlights(item, user, year, nameMonth)}>
+                        <Form className={""}>
+                          <Switch name={"highlight"} value={item.highlights == 0} />
+                        </Form>
+                      </button>
+                    )}
                   </div>
                 </Td>
                 <Td align="right">
@@ -193,6 +162,32 @@ export default function ModalView({
       </>
     </ModalLayout>
   );
+}
+
+async function editHighlights(item:any, user: User | null, year: number, nameMonth: string) {
+
+  const highlights =
+    item.highlights == 0 ? item.highlights + 2 : item.highlights - 2;
+
+  const realProfit =
+    item.highlights > 0 ? item.realProfit - 2 : item.realProfit + 2;
+
+  const percentage =
+    Math.round((realProfit / (item.buyPrice + highlights)) * 10000) /
+    100;
+
+  const newData = { ...item };
+  delete newData.id;
+
+  const docData = {
+    ...newData,
+    highlights: highlights,
+    realProfit: realProfit,
+    percentage: percentage,
+  };
+
+  const docRef = doc(db, user!.uid, String(year!), nameMonth!, item.id); // itemId é o ID exclusivo do item a ser editado
+  await updateDoc(docRef, docData);
 }
 
 async function handleDelete(month: any, id: string, user: any) {

@@ -18,8 +18,8 @@ export default function LoginLayout({ children }: LayoutProps) {
   }, [router]);
 
   return (
-    <div className="bg-gradient-to-tl from-purple-500 to-blue-500 flex items-center justify-center h-full">
-      <div className="p-8 border-2 rounded-3xl bg-white bg-opacity-25">
+    <div className="bg-gradient-to-t from-neutral-700 to-neutral-900 flex items-center justify-center h-full">
+      <div className="p-8 border-2 rounded-3xl bg-white bg-opacity-10">
         {children}
       </div>
     </div>
