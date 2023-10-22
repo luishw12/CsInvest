@@ -111,7 +111,7 @@ export default function ModalView({
                     {item && (
                       <button onClick={() => editHighlights(item, user, year, nameMonth)}>
                         <Form className={""}>
-                          <Switch name={"highlight"} value={item.highlights == 0} />
+                          <Switch name={"highlight"} value={item.highlights > 0} />
                         </Form>
                       </button>
                     )}
