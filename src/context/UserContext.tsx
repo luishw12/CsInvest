@@ -157,7 +157,6 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     } catch (error) {
       if (id) return toast.error("Erro ao editar o item.");
       toast.error("Erro ao adicionar o item.");
-      console.log(error);
     }
   }
 

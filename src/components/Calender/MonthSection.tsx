@@ -90,8 +90,6 @@ export default function MonthSection({
           }
         })
 
-        console.log(documents);
-
         setIncome(qntIncomming === 0 ? 0 : Math.round(incomming/qntIncomming * 100) / 100);
         setMonthInfos(documents);
       });
