@@ -2,20 +2,14 @@
 import React, { useEffect, useState } from "react";
 import {AiOutlineDollarCircle, AiOutlineEye, AiOutlinePlusCircle} from "react-icons/ai";
 import { CgSpinnerTwo } from "react-icons/cg";
-import ModalRegister from "../Modals/Register";
 import {
-  DocumentData,
   collection,
   onSnapshot,
-  orderBy,
-  query, addDoc, doc, deleteDoc, OrderByDirection,
+  query, addDoc, doc, deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase/firebaseConfig";
-import ModalView from "../Modals/View";
 import { toast } from "react-toastify";
-import { User } from "firebase/auth";
 import { formatBrl, months } from ".";
-import ModalAporte from "@/components/Modals/Aporte";
 import {handleUpdateAporte} from "@/components/DbFunctions/aporte-profit";
 import {useUser} from "@/context/UserContext";
 
@@ -28,6 +22,15 @@ export default function MonthSection({
   title,
   number,
 }: MonthSectionProps) {
+  const {
+    year,
+    user,
+    setMonthSelected,
+    setAporteOpen,
+    setViewOpen,
+    setRegisterOpen,
+    userDb,
+  } = useUser();
   const [loading, setLoading] = useState<boolean>(true);
 
   const [monthInfos, setMonthInfos] = useState<any>();
@@ -36,17 +39,6 @@ export default function MonthSection({
   const [profit, setProfit] = useState<number>(0);
   const [totalAporteProfit, setTotalAporteProfit] = useState<number>(0);
   const [income, setIncome] = useState<number>(0);
-
-  const {
-    year,
-    user,
-    setMonthSelected,
-    setAporteOpen,
-    setViewOpen,
-    setRegisterOpen,
-    tableOrderBy,
-    userDb,
-  } = useUser();
 
   const date = new Date();
   const currentMonth = date.getMonth() + 1;
@@ -83,14 +75,14 @@ export default function MonthSection({
 
           documents.push({ ...docSnapshot.data(), id: docSnapshot.id });
 
-          if(docSnapshot.data().sellPrice > 0) {
+          if(docSnapshot.data().sold) {
             const porcentage = docSnapshot.data().percentage
             incomming += porcentage;
             qntIncomming += 1;
           }
 
           if(number != currentMonth) {
-            if(docSnapshot.data().sellPrice <= 0) {
+            if(!docSnapshot.data().sold) {
               addDoc(collection(db, user!.uid, year.toString(), nameMonth!), {...docSnapshot.data()});
               const document = doc(db, user!.uid, year.toString(), month!.name!, docSnapshot.id)
               deleteDoc(document);
@@ -98,7 +90,6 @@ export default function MonthSection({
           }
         })
 
-        console.log(documents);
         setIncome(qntIncomming === 0 ? 0 : Math.round(incomming/qntIncomming * 100) / 100);
         setMonthInfos(documents);
       });
@@ -142,10 +133,14 @@ export default function MonthSection({
     let prof = 0;
     if (monthInfos) {
       monthInfos.map((info: any) => {
-        invested += info.buyPrice + info.highlights;
-        setInvestedAmount(invested);
-        prof += info.realProfit;
-        setProfit(prof);
+        if(!info.sold) {
+          invested += info.buyPrice + info.highlights;
+          setInvestedAmount(invested);
+        }
+        if(info.sold){
+          prof += info.realProfit;
+          setProfit(prof);
+        }
       });
       setLoading(false);
       return;
@@ -229,7 +224,7 @@ export default function MonthSection({
               </p>
             </div>
             <div className="w-full grid grid-cols-2">
-              <p>Valor Investido</p>
+              <p>Valor Inventário</p>
               <p
                 className={`text-right ${
                   investedAmount === 0 ? "text-black" : "text-red-600"

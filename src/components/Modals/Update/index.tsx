@@ -1,8 +1,7 @@
 "use client";
-import { Form, Input, Button } from "design-system-toshyro";
+import {Form, Input, Button} from "design-system-toshyro";
 
 import { ModalUpdate } from "../interfaces";
-import {handleRegister} from "@/components/DbFunctions/register-edit";
 import {useUser} from "@/context/UserContext";
 
 export default function ModalUpdate({
@@ -11,11 +10,8 @@ export default function ModalUpdate({
 }: ModalUpdate) {
   const {
     dataItem,
-    monthSelected,
-    user,
-    userDb,
-    year,
-    setViewOpen
+    setViewOpen,
+    handleRegister,
   } = useUser();
 
   if (!open || !dataItem) return;
@@ -35,13 +31,6 @@ export default function ModalUpdate({
           width="col-span-12"
         />
         <Input
-          name={"name"}
-          label="Nome"
-          defaultValue={dataItem.name}
-          validation={{ required: "Este campo é obrigatório" }}
-          width="col-span-12"
-        />
-        <Input
           name={"buyPrice"}
           label="Valor da compra"
           type="number"
@@ -54,9 +43,11 @@ export default function ModalUpdate({
           label="Valor da Venda"
           type="number"
           defaultValue={dataItem.sellPrice}
+          validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
         <Input name="highlights" hidden defaultValue={dataItem.highlights} />
+        <Input name="sold" hidden defaultValue={dataItem.sold} />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
           <Button
             onClick={() => {
@@ -70,7 +61,7 @@ export default function ModalUpdate({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, monthSelected, year, user!, userDb, dataItem.id);
+              handleRegister(e, dataItem.id);
               setOpen(false);
               setViewOpen(true);
             }}

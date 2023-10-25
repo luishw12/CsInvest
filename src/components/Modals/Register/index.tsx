@@ -1,27 +1,14 @@
 "use client";
-import { Form, Input, Button } from "design-system-toshyro";
+import {Form, Input, Button} from "design-system-toshyro";
 
-import {
-  collection,
-  doc,
-  addDoc,
-  updateDoc,
-  DocumentData,
-} from "firebase/firestore";
-import { db } from "../../../../firebase/firebaseConfig";
-import { months } from "@/components/Calender";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { User } from "firebase/auth";
 import { ModalRegister } from "../interfaces";
-import {handleRegister} from "@/components/DbFunctions/register-edit";
 import {useUser} from "@/context/UserContext";
 
 export default function ModalRegister({
   open,
   setOpen,
 }: ModalRegister) {
-  const {user, userDb, monthSelected, year} = useUser();
+  const {user, userDb, handleRegister} = useUser();
 
   if (!open || !user || !userDb) return;
 
@@ -49,6 +36,7 @@ export default function ModalRegister({
           name={"sellPrice"}
           label="Valor da Venda"
           type="number"
+          validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
@@ -61,7 +49,7 @@ export default function ModalRegister({
           />
           <Button
             onSubmit={(e) => {
-              handleRegister(e, monthSelected, year, user, userDb);
+              handleRegister(e);
               setOpen(false);
             }}
             title="Adicionar"
