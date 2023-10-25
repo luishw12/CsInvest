@@ -1,5 +1,5 @@
 "use client";
-import {Form, Switch, Table, TableObjectDto, Td, Th} from "design-system-toshyro";
+import {Table, TableObjectDto, Td, Th} from "design-system-toshyro";
 import { formatBrl, months } from "@/components/Calender";
 
 import { AiOutlineEye } from "react-icons/ai";
@@ -7,21 +7,20 @@ import { BiTrashAlt } from "react-icons/bi";
 import { BsPencilSquare } from "react-icons/bs";
 
 import React, {useEffect, useState} from "react";
-import {deleteDoc, doc, updateDoc} from "firebase/firestore";
-import { db } from "../../../../firebase/firebaseConfig";
-import { toast } from "react-toastify";
 import { ModalView } from "../interfaces";
 import ModalLayout from "../_Layout";
 import Filter from "@/components/Modals/View/components/filter";
 import {useUser} from "@/context/UserContext";
 import _ from 'lodash';
-import {User} from "firebase/auth";
+import {AntSwitch} from "design-system-toshyro/lib/compoments/inputs/Switch/antSwitch";
+import TableSkeleton from "@/components/tableSkeleton";
 
 const columns: TableObjectDto[] = [
   { name: "Nome" },
   { name: "Dia da compra", align: "center" },
   { name: "Valor Compra", align: "right" },
   { name: "Valor Venda", align: "right" },
+  { name: "Vendido", align: "center" },
   { name: "Destaques", align: "center" },
   { name: "Lucro BRL", align: "right" },
   { name: "Lucro %", align: "center" },
@@ -34,42 +33,46 @@ export default function ModalView({
 }: ModalView) {
   const {
     monthSelected,
-    user,
-    infos, userDb,
-    year,
+    infos,
     setDataItem,
     setEditOpen,
     setViewImageOpen,
-    tableOrderBy
+    tableOrderBy,
+    editSold,
+    editHighlights,
+    handleDelete,
   } = useUser();
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [viewItems, setViewItems] = useState<any>(infos);
   const [filter, setFilter] = useState<string>("");
-
-  const [sold, setSold] = useState<boolean>(false);
+  const [soldFilter, setSoldFilter] = useState<boolean>(false);
 
   useEffect(() => {
-    if(filter) {
-      let newInfos: any = [];
-      infos.forEach((info:any) => {
-        if(info.name.toLowerCase().includes(filter.toLowerCase())) newInfos.push(info);
-      })
-      if(sold) newInfos = newInfos.filter((i:any) => i.sellPrice > 0);
-      setViewItems(newInfos);
+    setLoading(true);
+    if (!infos || !infos.length) {
+      // Se 'infos' não existir ou estiver vazio, não há nada para filtrar ou classificar.
+      setViewItems([]);
+      setLoading(false);
       return;
     }
-    if(sold) {
-      const newInfos = infos.filter((i:any) => i.sellPrice > 0);
-      setViewItems(newInfos);
-      return;
+    let filteredInfos = [...infos]; // Comece com uma cópia das infos originais
+
+    if (filter) {
+      filteredInfos = filteredInfos.filter((info) => info.name.toLowerCase().includes(filter.toLowerCase()));
     }
-    if(tableOrderBy) {
-      const newInfos = _.orderBy(infos, [tableOrderBy.field], [tableOrderBy.direction]);
-      setViewItems(newInfos);
-      return;
+
+    if (soldFilter) { // Use 'soldFilter !== null' para verificar se 'soldFilter' não é undefined
+      filteredInfos = filteredInfos.filter((info) => info.sold === soldFilter);
     }
-    setViewItems(infos)
-  }, [filter, sold, tableOrderBy, infos]);
+
+    if (tableOrderBy) {
+      const { field, direction } = tableOrderBy;
+      filteredInfos = _.orderBy(filteredInfos, [field], [direction]);
+    }
+
+    setViewItems(filteredInfos);
+    setLoading(false);
+  }, [filter, soldFilter, tableOrderBy, infos]);
 
   useEffect(() => {
     setFilter("");
@@ -83,8 +86,10 @@ export default function ModalView({
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
-        <Filter setFilter={setFilter} setSold={setSold} />
-        <Table columns={columns} pagination={viewItems.length > 10}>
+        <Filter setFilter={setFilter} setSold={setSoldFilter} />
+        {loading ? <TableSkeleton />
+          : (
+            <Table columns={columns} pagination={viewItems.length > 10}>
           {viewItems.map((item: any, key: number) => {
             const buyDate = item.date && new Date(item.date.seconds * 1000);
 
@@ -108,13 +113,12 @@ export default function ModalView({
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    {item && (
-                      <button onClick={() => editHighlights(item, user, year, nameMonth)}>
-                        <Form className={""}>
-                          <Switch name={"highlight"} value={item.highlights > 0} />
-                        </Form>
-                      </button>
-                    )}
+                    <AntSwitch defaultChecked={item.sold || soldFilter} onChange={() => editSold(item)} inputProps={{ 'aria-label': 'ant design' }} />
+                  </div>
+                </Td>
+                <Td align="center">
+                  <div className="flex items-center gap-2 justify-center">
+                    <AntSwitch defaultChecked={item.highlights > 0 || soldFilter} onChange={() => editHighlights(item)} inputProps={{ 'aria-label': 'ant design' }} />
                   </div>
                 </Td>
                 <Td align="right">
@@ -146,7 +150,7 @@ export default function ModalView({
                     </button>
                     <button
                       onClick={() => {
-                        handleDelete(nameMonth, item.id, user);
+                        handleDelete(item.id);
                         if (infos.length == 1) setOpen(false);
                       }}
                       className="p-1.5 bg-red-500 hover:bg-red-600 rounded-md text-white"
@@ -159,46 +163,8 @@ export default function ModalView({
             );
           })}
         </Table>
+          )}
       </>
     </ModalLayout>
   );
-}
-
-async function editHighlights(item:any, user: User | null, year: number, nameMonth: string) {
-
-  const highlights =
-    item.highlights == 0 ? item.highlights + 2 : item.highlights - 2;
-
-  const realProfit =
-    item.highlights > 0 ? item.realProfit - 2 : item.realProfit + 2;
-
-  const percentage =
-    Math.round((realProfit / (item.buyPrice + highlights)) * 10000) /
-    100;
-
-  const newData = { ...item };
-  delete newData.id;
-
-  const docData = {
-    ...newData,
-    highlights: highlights,
-    realProfit: realProfit,
-    percentage: percentage,
-  };
-
-  const docRef = doc(db, user!.uid, String(year!), nameMonth!, item.id); // itemId é o ID exclusivo do item a ser editado
-  await updateDoc(docRef, docData);
-}
-
-async function handleDelete(month: any, id: string, user: any) {
-  const year = new Date().getFullYear().toString();
-
-  if (confirm("Tem certeza que deseja deletar este item?"))
-    try {
-      const docRef = doc(db, user!.uid, year, month!, id);
-      await deleteDoc(docRef);
-      toast.success("Item excluido com sucesso!");
-    } catch (err: any) {
-      toast.error("Erro ao excluir o item: ", err);
-    }
 }
