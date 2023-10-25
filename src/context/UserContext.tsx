@@ -179,9 +179,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   async function editHighlights(item:any) {
     const highlights = !item.highlights;
 
-    const realProfit = highlights ? Number(item.realProfit) - 2 : Number(item.realProfit) + 2;
+    const realProfit = (Number(item.sellPrice) * (1 - userDb!.sellTax)) - (Number(item.buyPrice) + (highlights ? 2 : 0));
 
-    const percentage = Math.round((realProfit / (item.buyPrice + highlights ? 2 : 0)) * 100) / 100;
+    const percentage = Number(Math.round((realProfit / Number(item.buyPrice)) * 10000) / 100);
 
     const newData = { ...item };
     delete newData.id;

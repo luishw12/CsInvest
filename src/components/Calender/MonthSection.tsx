@@ -207,20 +207,20 @@ export default function MonthSection({
               <p>Rendimento Médio</p>
               <p
                 className={`text-right ${
-                  investedAmount ? "text-blue-600" : "text-black"
+                  investedAmount || profit ? "text-blue-600" : "text-black"
                 }`}
               >
-                {investedAmount ? `${income}%` : "-"}
+                {investedAmount || profit ? `${income}%` : "-"}
               </p>
             </div>
             <div className="w-full grid grid-cols-2">
               <p>Rentabilidade</p>
               <p
                 className={`text-right ${
-                  investedAmount ? "text-blue-600" : "text-black"
+                  investedAmount || profit ? "text-blue-600" : "text-black"
                 }`}
               >
-                {investedAmount ? `${percentage}%` : "-"}
+                {investedAmount || profit ? `${percentage}%` : "-"}
               </p>
             </div>
             <div className="w-full grid grid-cols-2">
