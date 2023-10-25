@@ -75,6 +75,13 @@ export default function ModalView({
   }, [filter, soldFilter, tableOrderBy, infos]);
 
   useEffect(() => {
+    setLoading(true);
+    setTimeout(()=> {
+      setLoading(false)
+    }, 10)
+  }, [viewItems]);
+
+  useEffect(() => {
     setFilter("");
     setViewItems(infos)
   }, [open]);
