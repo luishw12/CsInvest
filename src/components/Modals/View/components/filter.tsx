@@ -1,14 +1,13 @@
 "use client";
-import {Button, ResetForm, Select, Input, CheckBox} from "design-system-toshyro";
+import {Button, ResetForm, Select, Input} from "design-system-toshyro";
 import { BiChevronDown } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
 import {Dispatch, SetStateAction, useState} from "react";
-import {OrderByDirection} from "firebase/firestore";
 import {useUser} from "@/context/UserContext";
 
 interface FilterProps {
   setFilter: Dispatch<SetStateAction<string>>;
-  setSold: Dispatch<SetStateAction<boolean>>;
+  setSold: Dispatch<SetStateAction<SoldOptionsEnum>>;
 }
 
 export default function Filter({ setFilter, setSold }: FilterProps) {
@@ -35,15 +34,19 @@ export default function Filter({ setFilter, setSold }: FilterProps) {
         <Input label="Nome" name="name" width="col-span-4" />
         <Select label="Ordenar Por" name="orderBy" width="col-span-2" options={OrderByOptions} />
         <Select label="Ordem" name="direction" width="col-span-2" options={DirectionOptions} />
-        <div className={"col-span-2 flex justify-center"}>
-          <CheckBox name={"sold"} label={"Vendido"} />
-        </div>
+        <Select label="Vendido" name="sold" width="col-span-2" options={SoldOptions} />
         <div className="col-span-2 h-full flex justify-end items-center">
           <Button title="Pesquisar" size="sm" onSubmit={handleSearch} />
         </div>
       </ResetForm>
     </>
   )
+}
+
+export enum SoldOptionsEnum {
+  ALL = "0",
+  SOLD = "1",
+  NOT_SOLD = "2"
 }
 
 export const OrderByOptions = [
@@ -54,4 +57,10 @@ export const OrderByOptions = [
 export const DirectionOptions = [
   { key: "desc", value: "Decrescente" },
   { key: "asc", value: "Crescente" },
+]
+
+export const SoldOptions = [
+  { value: "Todos", key: SoldOptionsEnum.ALL },
+  { value: "Vendidos", key: SoldOptionsEnum.SOLD },
+  { value: "Não Vendidos", key: SoldOptionsEnum.NOT_SOLD },
 ]

@@ -9,7 +9,7 @@ import { BsPencilSquare } from "react-icons/bs";
 import React, {useEffect, useState} from "react";
 import { ModalView } from "../interfaces";
 import ModalLayout from "../_Layout";
-import Filter from "@/components/Modals/View/components/filter";
+import Filter, {SoldOptionsEnum} from "@/components/Modals/View/components/filter";
 import {useUser} from "@/context/UserContext";
 import _ from 'lodash';
 import {AntSwitch} from "design-system-toshyro/lib/compoments/inputs/Switch/antSwitch";
@@ -41,10 +41,11 @@ export default function ModalView({
     editHighlights,
     handleDelete,
   } = useUser();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [viewItems, setViewItems] = useState<any>(infos);
   const [filter, setFilter] = useState<string>("");
-  const [soldFilter, setSoldFilter] = useState<boolean>(false);
+  const [soldFilter, setSoldFilter] = useState<SoldOptionsEnum>(SoldOptionsEnum.ALL);
 
   useEffect(() => {
     setLoading(true);
@@ -60,8 +61,13 @@ export default function ModalView({
       filteredInfos = filteredInfos.filter((info) => info.name.toLowerCase().includes(filter.toLowerCase()));
     }
 
-    if (soldFilter) { // Use 'soldFilter !== null' para verificar se 'soldFilter' não é undefined
-      filteredInfos = filteredInfos.filter((info) => info.sold === soldFilter);
+    switch (soldFilter) {
+      case SoldOptionsEnum.SOLD:
+        filteredInfos = filteredInfos.filter((info) => info.sold == true);
+        break;
+      case SoldOptionsEnum.NOT_SOLD:
+        filteredInfos = filteredInfos.filter((info) => info.sold != true);
+        break;
     }
 
     if (tableOrderBy) {
@@ -117,12 +123,12 @@ export default function ModalView({
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    {!loading && <AntSwitch defaultChecked={item.sold || soldFilter} onChange={() => editSold(item)} inputProps={{ 'aria-label': 'ant design' }} />}
+                    {!loading && <AntSwitch defaultChecked={item.sold} onChange={() => editSold(item)} inputProps={{ 'aria-label': 'ant design' }} />}
                   </div>
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    {!loading && <AntSwitch defaultChecked={item.highlights > 0 || soldFilter} onChange={() => editHighlights(item)} inputProps={{ 'aria-label': 'ant design' }} />}
+                    {!loading && <AntSwitch defaultChecked={item.highlights > 0} onChange={() => editHighlights(item)} inputProps={{ 'aria-label': 'ant design' }} />}
                   </div>
                 </Td>
                 <Td align="right">
