@@ -13,7 +13,6 @@ import Filter from "@/components/Modals/View/components/filter";
 import {useUser} from "@/context/UserContext";
 import _ from 'lodash';
 import {AntSwitch} from "design-system-toshyro/lib/compoments/inputs/Switch/antSwitch";
-import TableSkeleton from "@/components/tableSkeleton";
 
 const columns: TableObjectDto[] = [
   { name: "Nome" },
@@ -94,9 +93,7 @@ export default function ModalView({
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
         <Filter setFilter={setFilter} setSold={setSoldFilter} />
-        {loading ? <TableSkeleton />
-          : (
-            <Table columns={columns} pagination={viewItems.length > 10}>
+        <Table columns={columns} pagination={viewItems.length > 10}>
           {viewItems.map((item: any, key: number) => {
             const buyDate = item.date && new Date(item.date.seconds * 1000);
 
@@ -120,12 +117,12 @@ export default function ModalView({
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    <AntSwitch defaultChecked={item.sold || soldFilter} onChange={() => editSold(item)} inputProps={{ 'aria-label': 'ant design' }} />
+                    {!loading && <AntSwitch defaultChecked={item.sold || soldFilter} onChange={() => editSold(item)} inputProps={{ 'aria-label': 'ant design' }} />}
                   </div>
                 </Td>
                 <Td align="center">
                   <div className="flex items-center gap-2 justify-center">
-                    <AntSwitch defaultChecked={item.highlights > 0 || soldFilter} onChange={() => editHighlights(item)} inputProps={{ 'aria-label': 'ant design' }} />
+                    {!loading && <AntSwitch defaultChecked={item.highlights > 0 || soldFilter} onChange={() => editHighlights(item)} inputProps={{ 'aria-label': 'ant design' }} />}
                   </div>
                 </Td>
                 <Td align="right">
@@ -170,7 +167,6 @@ export default function ModalView({
             );
           })}
         </Table>
-          )}
       </>
     </ModalLayout>
   );
