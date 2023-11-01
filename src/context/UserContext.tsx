@@ -129,8 +129,18 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
     const percentage = Number(Math.round((realProfit / Number(e.buyPrice)) * 10000) / 100);
 
+    async function getName(item:any) {
+      if(item.name)
+        return {market_name: item.name, image: ""}
+
+      if(item.marketUrl)
+        return await getItemInfos(e.marketUrl)
+
+      toast.error("Nome ou Link obrigatório");
+    }
+
     try {
-      const infos = await getItemInfos(e.marketUrl);
+      const infos = await getName(e);
 
       const docData = {
         name: infos.market_name,

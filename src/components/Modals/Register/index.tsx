@@ -20,9 +20,13 @@ export default function ModalRegister({
         </h2>
 
         <Input
+          name={"name"}
+          label="Nome do item"
+          width="col-span-12"
+        />
+        <Input
           name={"marketUrl"}
           label="Link da skin"
-          validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
         <Input
