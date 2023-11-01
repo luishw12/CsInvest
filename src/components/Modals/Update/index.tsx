@@ -24,10 +24,15 @@ export default function ModalUpdate({
         </h2>
 
         <Input
+          name={"name"}
+          label="Nome do item"
+          defaultValue={dataItem.name}
+          width="col-span-12"
+        />
+        <Input
           name={"marketUrl"}
           label="Link da skin"
           defaultValue={dataItem.marketUrl}
-          validation={{ required: "Este campo é obrigatório" }}
           width="col-span-12"
         />
         <Input
