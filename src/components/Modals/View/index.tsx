@@ -99,7 +99,8 @@ export default function ModalView({
     <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
       <>
         <Filter setFilter={setFilter} setSold={setSoldFilter} />
-        <Table columns={columns} pagination={viewItems.length > 10}>
+        <div className={"max-h-[calc(100vh-400px)] overflow-y-auto"}>
+          <Table columns={columns}>
           {viewItems.map((item: any, key: number) => {
             const buyDate = item.date && new Date(item.date.seconds * 1000);
 
@@ -173,6 +174,7 @@ export default function ModalView({
             );
           })}
         </Table>
+        </div>
       </>
     </ModalLayout>
   );
