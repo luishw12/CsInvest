@@ -65,6 +65,8 @@ export default function MonthSection({
 
       const queryData = query(collectionRef);
 
+      const itemsMovedToCurrentMonth = new Set(); // Conjunto para rastrear itens movidos
+
       onSnapshot(queryData, (querySnapshot) => {
         const documents: any = [];
         let incomming = 0;
@@ -82,10 +84,11 @@ export default function MonthSection({
           }
 
           if(number != currentMonth) {
-            if(!docSnapshot.data().sold) {
+            if(!docSnapshot.data().sold && !itemsMovedToCurrentMonth.has(docSnapshot.id)) {
               addDoc(collection(db, user!.uid, year.toString(), nameMonth!), {...docSnapshot.data()});
-              const document = doc(db, user!.uid, year.toString(), month!.name!, docSnapshot.id)
+              const document = doc(db, user!.uid, year.toString(), month!.name!, docSnapshot.id);
               deleteDoc(document);
+              itemsMovedToCurrentMonth.add(docSnapshot.id); // Marcar o item como movido
             }
           }
         })
