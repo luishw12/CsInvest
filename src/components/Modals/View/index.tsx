@@ -96,7 +96,7 @@ export default function ModalView({
   const nameMonth = months.find((m) => m.number === monthSelected)?.name!;
 
   return (
-    <ModalLayout title={`Seus Itens de ${nameMonth}`} setOpen={setOpen} width={"w-[80%]"}>
+    <ModalLayout title={`Seus Itens de ${nameMonth}`} qntItens={viewItems.length} setOpen={setOpen} width={"w-[80%]"}>
       <>
         <Filter setFilter={setFilter} setSold={setSoldFilter} />
         <div className={"max-h-[calc(100vh-400px)] overflow-y-auto"}>
