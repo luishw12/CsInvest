@@ -99,7 +99,7 @@ export default function ModalView({
     <ModalLayout title={`Seus Itens de ${nameMonth}`} qntItens={viewItems.length} setOpen={setOpen} width={"w-[80%]"}>
       <>
         <Filter setFilter={setFilter} setSold={setSoldFilter} />
-        <div className={"max-h-[calc(100vh-400px)] overflow-y-auto"}>
+        <div className={"max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 scrollbar-track-gray-100"}>
           <Table columns={columns}>
           {viewItems.map((item: any, key: number) => {
             const buyDate = item.date && new Date(item.date.seconds * 1000);
