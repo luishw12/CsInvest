@@ -1,18 +1,21 @@
 "use client";
-import { Button, Form, CheckBox } from "design-system-toshyro";
+import { Button, Form } from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatBrl } from "@/components/Calender";
 import { DocumentData, collection, onSnapshot } from "firebase/firestore";
 import { CgSpinnerTwo } from "react-icons/cg";
 import { db } from "../../../../firebase/firebaseConfig";
 import {useUser} from "@/context/UserContext";
 import InputCs from "@/components/inputs/Input";
+import {toast} from "react-toastify";
 
 export default function Simulation({ setOpen, open}: ModalConfig) {
   const [profit, setProfit] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(0);
+
+  const [highlight, setHighlight] = useState<number>(0);
 
   const [info, setInfo] = useState<DocumentData>();
 
@@ -54,8 +57,23 @@ export default function Simulation({ setOpen, open}: ModalConfig) {
                   label="Valor da venda"
                   width="col-span-6"
                 />
-                <div className="col-span-12">
-                  <CheckBox name="highlight" label="Destaque" />
+                <div className="col-span-12 flex items-center justify-center gap-4">
+                  <button
+                    type={"button"}
+                    className={"h-6 w-6 text-lg rounded-md flex items-center justify-center text-red-500 font-bold bg-gray-300 dark:bg-slate-600 outline-none hover:ring-1 ring-red-500"}
+                    onClick={()=> {
+                      if(highlight == 0) return toast.error("O Destaque não pode ser menor que R$ 0,00")
+                      setHighlight(highlight - 2)
+                    }}>
+                    -
+                  </button>
+                  <p>{formatBrl(highlight)}</p>
+                  <button
+                    type={"button"}
+                    className={"h-6 w-6 text-lg rounded-md flex items-center justify-center text-blue-500 font-bold bg-gray-300 dark:bg-slate-600 outline-none hover:ring-1 ring-blue-500"}
+                    onClick={()=>setHighlight(highlight + 2)}>
+                    +
+                  </button>
                 </div>
                 <div className="col-span-6 flex items-center justify-between font-semibold">
                   <p>Lucro em BRL:</p>
@@ -92,7 +110,6 @@ export default function Simulation({ setOpen, open}: ModalConfig) {
                     onSubmit={(e: any) => {
                       const sellPrice = e.sellPrice.replace(",", ".");
                       const buyPrice = e.buyPrice.replace(",", ".");
-                      const highlight = Number(e.highlight) ? 2 : 0;
                       const prof = (Number(sellPrice) * (1 - info.sellTax) - Number(buyPrice)) - highlight;
                       const perc = Math.round((prof / Number(buyPrice)) * 10000) / 100;
                       setProfit(prof);

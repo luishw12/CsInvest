@@ -19,7 +19,7 @@ export default function ModalAporte({
 
   return (
     <ModalLayout setOpen={setOpen} title={`Aporte de ${selectedMonth?.name}`}>
-      <Form className="p-8 bg-white rounded-xl grid grid-cols-12 gap-5 min-w-[500px]">
+      <Form className="p-8 bg-white rounded-xl grid grid-cols-12 gap-5 min-w-[500px] dark:bg-slate-800">
         <h3 className={"col-span-12 text-center font-bold text-3xl my-4"}>{formatBrl(userDb.aporte && userDb.aporte[year][selectedMonth.name] || 0)}</h3>
         <InputCs
           name={"aporte"}
