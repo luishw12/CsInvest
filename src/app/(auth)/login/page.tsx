@@ -13,7 +13,7 @@ export default function Login() {
         <div className="col-span-12 w-full flex flex-col gap-3 mt-5">
           <Button onSubmit={handleLogin} title="Entrar" type="button" full />
           <Link
-            href="/register"
+            href={"/register"}
             className="text-center text-blue-600 hover:text-blue-700 font-medium"
           >
             Criar Conta

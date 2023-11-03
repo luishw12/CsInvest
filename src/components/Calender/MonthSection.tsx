@@ -154,14 +154,14 @@ export default function MonthSection({
 
   return (
     <div
-      className={`rounded-xl overflow-hidden border-2  ${
-        highlightSection ? "border-blue-700" : "border-gray-700"
+      className={`rounded-xl overflow-hidden border-2 shadow-md ${
+        highlightSection ? "border-blue-700" : "border-gray-700 dark:border-slate-600"
       }`}
     >
       {/* Title */}
       <div
         className={`flex items-center text-lg justify-between px-3 py-1.5  text-white ${
-          highlightSection ? "font-bold bg-blue-700" : "font-normal bg-gray-700"
+          highlightSection ? "font-bold bg-blue-700" : "font-normal bg-gray-700 dark:bg-slate-600"
         }`}
       >
         <p>{number}</p>
@@ -203,14 +203,14 @@ export default function MonthSection({
       </div>
 
       {/* Body */}
-      <div className="h-[calc(100%-41px)] flex flex-col justify-between p-4 bg-gray-200">
+      <div className="h-[calc(100%-41px)] flex flex-col justify-between p-4 bg-gray-200 dark:bg-slate-800 dark:text-slate-300">
         {!loading ? (
           <>
             <div className="w-full grid grid-cols-2">
               <p>Rendimento Médio</p>
               <p
                 className={`text-right ${
-                  investedAmount || profit ? "text-blue-600" : "text-black"
+                  investedAmount || profit ? "text-blue-600" : "text-black dark:text-slate-300"
                 }`}
               >
                 {investedAmount || profit ? `${income}%` : "-"}
@@ -220,7 +220,7 @@ export default function MonthSection({
               <p>Rentabilidade</p>
               <p
                 className={`text-right ${
-                  investedAmount || profit ? "text-blue-600" : "text-black"
+                  investedAmount || profit ? "text-blue-600" : "text-black dark:text-slate-300"
                 }`}
               >
                 {investedAmount || profit ? `${percentage}%` : "-"}
@@ -230,7 +230,7 @@ export default function MonthSection({
               <p>Valor Inventário</p>
               <p
                 className={`text-right ${
-                  investedAmount === 0 ? "text-black" : "text-red-600"
+                  investedAmount === 0 ? "text-black dark:text-slate-300" : "text-red-600"
                 }`}
               >
                 {investedAmount === 0 ? "-" : formatBrl(investedAmount)}
@@ -243,7 +243,7 @@ export default function MonthSection({
                   profit > 0
                     ? "text-green-600"
                     : profit === 0
-                    ? "text-black"
+                    ? "text-black dark:text-slate-300"
                     : "text-red-600"
                 }`}
               >

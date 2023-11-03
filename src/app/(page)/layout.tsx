@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase/firebaseConfig";
-import { useUser } from "@/context/UserContext";
 
 export default function LayoutPages({ children }: LayoutProps) {
   const router = useRouter();
-  const { user } = useUser();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -19,7 +17,7 @@ export default function LayoutPages({ children }: LayoutProps) {
 
   return (
     <>
-      <div className="h-full bg-gray-100">
+      <div className="h-full bg-gray-100 dark:bg-slate-800">
         <Navbar />
         {children}
       </div>

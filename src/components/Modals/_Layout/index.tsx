@@ -6,7 +6,7 @@ export default function ModalLayout({ children, title, qntItens, setOpen, width 
   return (
     <div className="absolute h-screen w-screen top-0 left-0 bg-black bg-opacity-30 flex items-center justify-center z-10">
       <ClickAwayListener onClickAway={()=> setOpen(false)}>
-        <div className={`bg-white rounded-xl overflow-hidden ${width}`}>
+        <div className={`bg-white rounded-xl overflow-hidden dark:bg-slate-800 dark:text-slate-300 ${width}`}>
           <div className="py-3 px-4 flex items-center justify-between">
             <p className={"text-lg font-medium tracking-wide"}>{qntItens ? `Qnt(${qntItens})` : ""}</p>
             <h2 className="text-xl font-semibold text-center col-span-12">
