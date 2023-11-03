@@ -37,15 +37,16 @@ export default function ModalView({
     setEditOpen,
     setViewImageOpen,
     tableOrderBy,
+    filter,
+    soldFilter,
+    viewItems,
+    setViewItems,
     editSold,
     editHighlights,
     handleDelete,
   } = useUser();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [viewItems, setViewItems] = useState<any>(infos);
-  const [filter, setFilter] = useState<string>("");
-  const [soldFilter, setSoldFilter] = useState<SoldOptionsEnum>(SoldOptionsEnum.ALL);
 
   useEffect(() => {
     setLoading(true);
@@ -55,6 +56,7 @@ export default function ModalView({
       setLoading(false);
       return;
     }
+
     let filteredInfos = [...infos]; // Comece com uma cópia das infos originais
 
     if (filter) {
@@ -86,11 +88,6 @@ export default function ModalView({
     }, 10)
   }, [viewItems]);
 
-  useEffect(() => {
-    setFilter("");
-    setViewItems(infos)
-  }, [open]);
-
   if (!open || !infos || !viewItems) return;
 
   const nameMonth = months.find((m) => m.number === monthSelected)?.name!;
@@ -98,7 +95,7 @@ export default function ModalView({
   return (
     <ModalLayout title={`Seus Itens de ${nameMonth}`} qntItens={viewItems.length} setOpen={setOpen} width={"w-[80%]"}>
       <>
-        <Filter setFilter={setFilter} setSold={setSoldFilter} />
+        <Filter />
         <div className={"max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 scrollbar-track-gray-100"}>
           <Table columns={columns}>
           {viewItems.map((item: any, key: number) => {

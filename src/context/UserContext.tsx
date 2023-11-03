@@ -23,13 +23,17 @@ import ModalViewImage from "@/components/Modals/ItemImage";
 import {months} from "@/components/Calender";
 import {toast} from "react-toastify";
 import axios from "axios";
+import {SoldOptionsEnum} from "@/components/Modals/View/components/filter";
 
 type UserContextProps = {
   user: User | null;
   userDb?: DocumentData;
   year: number;
+  filter: string;
+  soldFilter: SoldOptionsEnum;
   infos: any;
   dataItem: any;
+  viewItems: any;
   tableOrderBy: { field: string, direction: OrderByDirection };
   monthSelected: number | undefined;
   setMonthSelected:  Dispatch<SetStateAction<number | undefined>>;
@@ -37,9 +41,12 @@ type UserContextProps = {
   setYear:  Dispatch<SetStateAction<number>>;
   setDataItem:  Dispatch<SetStateAction<any>>;
   setOrderBy:  Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
+  setFilter:  Dispatch<SetStateAction<string>>;
+  setSoldFilter:  Dispatch<SetStateAction<SoldOptionsEnum>>;
   setOpenSimulation:  Dispatch<SetStateAction<boolean>>;
   setOpenConfig:  Dispatch<SetStateAction<boolean>>;
   setAporteOpen:  Dispatch<SetStateAction<boolean>>;
+  setViewItems:  Dispatch<SetStateAction<any>>;
   setRegisterOpen:  Dispatch<SetStateAction<boolean>>;
   setViewOpen:  Dispatch<SetStateAction<boolean>>;
   setEditOpen:  Dispatch<SetStateAction<boolean>>;
@@ -63,8 +70,12 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
   const [tableOrderBy, setOrderBy] =
     useState<{ field: string, direction: OrderByDirection }>({field: "date", direction: "desc"});
+  const [filter, setFilter] = useState<string>("");
+  const [soldFilter, setSoldFilter] = useState<SoldOptionsEnum>(SoldOptionsEnum.ALL);
 
   const [infos, setInfos] = useState<any>();
+  const [viewItems, setViewItems] = useState<any>([]);
+
   const [year, setYear] = useState<number>(
     new Date().getFullYear()
   );
@@ -123,6 +134,15 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
     setMonthName(months.find(i => i.number == monthSelected)?.name)
   }, [monthSelected]);
+
+  useEffect(() => {
+    if(!editOpen && !viewOpen) {
+      setViewItems(infos);
+      setFilter("")
+      setSoldFilter(SoldOptionsEnum.ALL)
+      setOrderBy({field: "date", direction: "desc"})
+    }
+  }, [editOpen, viewOpen]);
 
   async function handleRegister(e: any, id?: string) {
     const realProfit = (Number(e.sellPrice) * (1 - userDb!.sellTax)) - (Number(e.buyPrice) + (e.highlights ? 2 : 0));
@@ -238,6 +258,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   return (
     <UserContext.Provider
       value={{
+        viewItems,
+        filter,
+        soldFilter,
         user,
         userDb,
         year,
@@ -245,6 +268,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         dataItem,
         monthSelected,
         tableOrderBy,
+        setFilter,
+        setViewItems,
+        setSoldFilter,
         setInfos,
         setYear,
         setMonthSelected,
