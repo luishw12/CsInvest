@@ -67,7 +67,7 @@ type UserContextProviderProps = {
 };
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
-  const [theme, setTheme] = useState<string>(localStorage.getItem("theme") || "light")
+  const [theme, setTheme] = useState<string>("light")
 
   const [user, setUser] = useState<User | null>(null);
   const [userDb, setUserDb] = useState<DocumentData>();

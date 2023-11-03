@@ -24,7 +24,7 @@ export default function Register() {
             full
           />
           <Link
-            href="/login"
+            href={"/login"}
             className="text-center text-blue-600 hover:text-blue-700 font-medium"
           >
             Entrar
