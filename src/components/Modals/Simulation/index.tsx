@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, Input, CheckBox } from "design-system-toshyro";
+import { Button, Form, CheckBox } from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { DocumentData, collection, onSnapshot } from "firebase/firestore";
 import { CgSpinnerTwo } from "react-icons/cg";
 import { db } from "../../../../firebase/firebaseConfig";
 import {useUser} from "@/context/UserContext";
+import InputCs from "@/components/inputs/Input";
 
 export default function Simulation({ setOpen, open}: ModalConfig) {
   const [profit, setProfit] = useState<number>(0);
@@ -43,18 +44,18 @@ export default function Simulation({ setOpen, open}: ModalConfig) {
           <Form className="grid grid-cols-12 gap-5 min-w-[500px]">
             {info ? (
               <>
-                <Input
+                <InputCs
                   name={"buyPrice"}
                   label="Valor da compra"
                   width="col-span-6"
                 />
-                <Input
+                <InputCs
                   name={"sellPrice"}
                   label="Valor da venda"
                   width="col-span-6"
                 />
                 <div className="col-span-12">
-                  <CheckBox  name="highlight" label="Destaque" />
+                  <CheckBox name="highlight" label="Destaque" />
                 </div>
                 <div className="col-span-6 flex items-center justify-between font-semibold">
                   <p>Lucro em BRL:</p>

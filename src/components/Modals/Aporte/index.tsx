@@ -2,14 +2,10 @@
 import { ModalAporte } from "../interfaces";
 import ModalLayout from "../_Layout";
 import {formatBrl, months} from "@/components/Calender";
-import {Button, Form, Input} from "design-system-toshyro";
-import {collection, doc, DocumentData, getDoc, onSnapshot, setDoc} from "firebase/firestore";
-import {db} from "../../../../firebase/firebaseConfig";
-import {toast} from "react-toastify";
-import {User} from "firebase/auth";
-import {useEffect, useState} from "react";
+import {Button, Form} from "design-system-toshyro";
 import {handleUpdateAporte} from "@/components/DbFunctions/aporte-profit";
 import {useUser} from "@/context/UserContext";
+import InputCs from "@/components/inputs/Input";
 
 export default function ModalAporte({
   open,
@@ -25,7 +21,7 @@ export default function ModalAporte({
     <ModalLayout setOpen={setOpen} title={`Aporte de ${selectedMonth?.name}`}>
       <Form className="p-8 bg-white rounded-xl grid grid-cols-12 gap-5 min-w-[500px]">
         <h3 className={"col-span-12 text-center font-bold text-3xl my-4"}>{formatBrl(userDb.aporte && userDb.aporte[year][selectedMonth.name] || 0)}</h3>
-        <Input
+        <InputCs
           name={"aporte"}
           label="Aporte"
           type={"number"}

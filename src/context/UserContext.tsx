@@ -33,12 +33,14 @@ type UserContextProps = {
   soldFilter: SoldOptionsEnum;
   infos: any;
   dataItem: any;
+  theme: string;
   viewItems: any;
   tableOrderBy: { field: string, direction: OrderByDirection };
   monthSelected: number | undefined;
   setMonthSelected:  Dispatch<SetStateAction<number | undefined>>;
   setInfos:  Dispatch<SetStateAction<any>>;
   setYear:  Dispatch<SetStateAction<number>>;
+  setTheme:  Dispatch<SetStateAction<string>>;
   setDataItem:  Dispatch<SetStateAction<any>>;
   setOrderBy:  Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
   setFilter:  Dispatch<SetStateAction<string>>;
@@ -65,6 +67,8 @@ type UserContextProviderProps = {
 };
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
+  const [theme, setTheme] = useState<string>(localStorage.getItem("theme") || "light")
+
   const [user, setUser] = useState<User | null>(null);
   const [userDb, setUserDb] = useState<DocumentData>();
 
@@ -96,6 +100,18 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       setUser(user);
     });
   }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const themes = ["light", "dark"]; // Lista de temas disponíveis
+
+    // Remove todas as classes de tema existentes
+    root.classList.remove(...themes);
+
+    // Adiciona a classe do novo tema
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (user) {
@@ -258,6 +274,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   return (
     <UserContext.Provider
       value={{
+        theme,
         viewItems,
         filter,
         soldFilter,
@@ -268,6 +285,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         dataItem,
         monthSelected,
         tableOrderBy,
+        setTheme,
         setFilter,
         setViewItems,
         setSoldFilter,

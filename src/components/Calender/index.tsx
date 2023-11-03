@@ -1,7 +1,5 @@
 "use client";
-import { User } from "firebase/auth";
 import MonthSection from "./MonthSection";
-import { DocumentData } from "firebase/firestore";
 
 export const months = [
   { abrev: "Jan", name: "Janeiro", number: 1 },

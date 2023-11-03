@@ -1,5 +1,5 @@
 "use client";
-import {Button, Form, Input, InputMask, InputSkeleton} from "design-system-toshyro";
+import {Button, Form} from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
 import {
@@ -12,14 +12,15 @@ import { toast } from "react-toastify";
 import { db } from "../../../../firebase/firebaseConfig";
 import {
   DocumentData,
-  collection,
   doc,
-  onSnapshot,
   updateDoc,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CgSpinnerTwo } from "react-icons/cg";
 import {useUser} from "@/context/UserContext";
+import InputCs from "@/components/inputs/Input";
+// @ts-ignore
+import InputMaskCs from "@/components/inputs/InputMask";
 
 export default function Configurations({ setOpen, open }: ModalConfig) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,19 +39,19 @@ export default function Configurations({ setOpen, open }: ModalConfig) {
       <ModalLayout title={"Configurações"} setOpen={setOpen}>
         <div className="p-5">
           <Form className="grid grid-cols-12 gap-5 min-w-[500px]">
-            <Input
+            <InputCs
               name={"name"}
               label="Nome"
               validation={{ required: "Este campo é obrigatório" }}
               defaultValue={user.displayName!}
             />
-            <Input
+            <InputCs
               name={"email"}
               label="Email"
               validation={{ required: "Este campo é obrigatório" }}
               defaultValue={user.email!}
             />
-            <InputMask
+            <InputMaskCs
               name={"phone"}
               label="Telefone"
               mask="(99) 99999-9999"
@@ -59,18 +60,18 @@ export default function Configurations({ setOpen, open }: ModalConfig) {
               defaultValue={user.phoneNumber!}
             />
             <div className="col-span-6 relative">
-              <InputMask
+              <InputMaskCs
                 name={"sellTax"}
                 label="Taxa de venda"
                 mask="99"
                 validation={{ required: "Este campo é obrigatório" }}
                 defaultValue={Math.round(userDb.sellTax * 100)}
               />
-              <div className="absolute bottom-0 right-0 font-semibold text-lg h-[40px] flex items-center mr-2.5 text-gray-500">
+              <div className="absolute bottom-0 right-0 font-bold text-lg h-[40px] flex items-center mr-2.5 text-gray-500 dark:text-slate-800">
                 %
               </div>
             </div>
-            <Input
+            <InputCs
               name={"sheets"}
               label="Link Planilha"
               defaultValue={userDb.sheets}
