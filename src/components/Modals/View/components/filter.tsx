@@ -1,24 +1,26 @@
 "use client";
-import {Button, ResetForm, Select, Input} from "design-system-toshyro";
+import { Button, ResetForm, Select, Input } from "design-system-toshyro";
 import { BiChevronDown } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
-import {Dispatch, SetStateAction, useState} from "react";
-import {useUser} from "@/context/UserContext";
+import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 
-interface FilterProps {
-  setFilter: Dispatch<SetStateAction<string>>;
-  setSold: Dispatch<SetStateAction<SoldOptionsEnum>>;
-}
-
-export default function Filter({ setFilter, setSold }: FilterProps) {
+export default function Filter() {
   const [filterOpen, setFilterOpen] = useState<boolean>(true);
 
-  const {setOrderBy} = useUser();
+  const {
+    filter,
+    soldFilter,
+    tableOrderBy,
+    setOrderBy,
+    setFilter,
+    setSoldFilter
+  } = useUser();
 
   function handleSearch(e: any) {
     setOrderBy({field: e.orderBy, direction: e.direction});
     setFilter(e.name)
-    setSold(e.sold);
+    setSoldFilter(e.sold);
   }
 
   return (
@@ -31,10 +33,10 @@ export default function Filter({ setFilter, setSold }: FilterProps) {
         <BiChevronDown className={`duration-300 ${filterOpen ? "rotate-180" : ""}`} />
       </button>
       <ResetForm className={`overflow-hidden duration-300 ease-in-out grid grid-cols-12 items-center gap-4 px-4 ${filterOpen ? "max-h-32 border-b py-2" : "max-h-0"}`}>
-        <Input label="Nome" name="name" width="col-span-4" />
-        <Select label="Ordenar Por" name="orderBy" width="col-span-2" options={OrderByOptions} />
-        <Select label="Ordem" name="direction" width="col-span-2" options={DirectionOptions} />
-        <Select label="Vendido" name="sold" width="col-span-2" options={SoldOptions} />
+        <Input label="Nome" name="name" width="col-span-4" defaultValue={filter} />
+        <Select label="Ordenar Por" name="orderBy" width="col-span-2" options={OrderByOptions} value={tableOrderBy.field} />
+        <Select label="Ordem" name="direction" width="col-span-2" options={DirectionOptions} value={tableOrderBy.direction} />
+        <Select label="Vendido" name="sold" width="col-span-2" options={SoldOptions} value={soldFilter} />
         <div className="col-span-2 h-full flex justify-end items-center">
           <Button title="Pesquisar" size="sm" onSubmit={handleSearch} />
         </div>
