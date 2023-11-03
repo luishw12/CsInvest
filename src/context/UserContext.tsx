@@ -33,14 +33,14 @@ type UserContextProps = {
   soldFilter: SoldOptionsEnum;
   infos: any;
   dataItem: any;
-  theme: string;
+  theme: "light" | "dark";
   viewItems: any;
   tableOrderBy: { field: string, direction: OrderByDirection };
   monthSelected: number | undefined;
   setMonthSelected:  Dispatch<SetStateAction<number | undefined>>;
   setInfos:  Dispatch<SetStateAction<any>>;
   setYear:  Dispatch<SetStateAction<number>>;
-  setTheme:  Dispatch<SetStateAction<string>>;
+  setTheme:  Dispatch<SetStateAction<"light" | "dark">>;
   setDataItem:  Dispatch<SetStateAction<any>>;
   setOrderBy:  Dispatch<SetStateAction<{ field: string, direction: OrderByDirection }>>;
   setFilter:  Dispatch<SetStateAction<string>>;
@@ -54,7 +54,7 @@ type UserContextProps = {
   setEditOpen:  Dispatch<SetStateAction<boolean>>;
   setViewImageOpen:  Dispatch<SetStateAction<boolean>>;
   handleRegister:  (e:any, id?:string) => void;
-  editHighlights:  (item:any) => void;
+  editHighlights:  (item:any, action:"add" | "remove") => void;
   editSold:  (item:any) => void;
   handleDelete:  (id:string) => void;
 };
@@ -67,7 +67,7 @@ type UserContextProviderProps = {
 };
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
-  const [theme, setTheme] = useState<string>("light")
+  const [theme, setTheme] = useState<"light" | "dark">("light")
 
   const [user, setUser] = useState<User | null>(null);
   const [userDb, setUserDb] = useState<DocumentData>();
@@ -96,6 +96,8 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [viewImageOpen, setViewImageOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    // @ts-ignore
+    setTheme(localStorage.getItem("theme"))
     onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
@@ -222,10 +224,12 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     return response.data;
   }
 
-  async function editHighlights(item:any) {
-    const highlights = !item.highlights;
+  async function editHighlights(item:any, action: "add" | "remove") {
+    const highlights = item.highlights ? typeof item.highlights == "boolean" ? 2 : item.highlights : 0;
 
-    const realProfit = (Number(item.sellPrice) * (1 - userDb!.sellTax)) - (Number(item.buyPrice) + (highlights ? 2 : 0));
+    const newHighlight = action == "add" ? highlights + 2 : highlights - 2;
+
+    const realProfit = (Number(item.sellPrice) * (1 - userDb!.sellTax)) - (Number(item.buyPrice) + newHighlight);
 
     const percentage = Number(Math.round((realProfit / Number(item.buyPrice)) * 10000) / 100);
 
@@ -234,10 +238,15 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
     const docData = {
       ...newData,
-      highlights: highlights,
+      highlights: newHighlight,
       realProfit: realProfit,
       percentage: percentage,
     };
+
+    if(highlights <= 0 && action == "remove"){
+      toast.error("O destaque não pode ser menor que R$ 0,00")
+      return;
+    }
 
     const docRef = doc(db, user!.uid, String(year!), monthName!, item.id); // itemId é o ID exclusivo do item a ser editado
     await updateDoc(docRef, docData);

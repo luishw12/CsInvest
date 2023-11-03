@@ -41,6 +41,7 @@ export default function ModalView({
     soldFilter,
     viewItems,
     setViewItems,
+    theme,
     editSold,
     editHighlights,
     handleDelete,
@@ -97,7 +98,7 @@ export default function ModalView({
       <>
         <Filter />
         <div className={"max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-slate-900 dark:scrollbar-track-gray-600"}>
-          <Table columns={columns} theme={"dark"}>
+          <Table columns={columns} theme={theme}>
           {viewItems.map((item: any, key: number) => {
             const buyDate = item.date && new Date(item.date.seconds * 1000);
 
@@ -125,8 +126,20 @@ export default function ModalView({
                   </div>
                 </Td>
                 <Td align="center">
-                  <div className="flex items-center gap-2 justify-center">
-                    {!loading && <AntSwitch defaultChecked={item.highlights > 0} onChange={() => editHighlights(item)} inputProps={{ 'aria-label': 'ant design' }} />}
+                  <div className="flex items-center gap-2 justify-between w-[90px]">
+                    <button
+                      type={"button"}
+                      className={"h-4 w-4 rounded-md flex items-center justify-center text-red-500 font-bold bg-gray-300 dark:bg-slate-600 outline-none hover:ring-1 ring-red-500"}
+                      onClick={()=>editHighlights(item, "remove")}>
+                      -
+                    </button>
+                    <div>{formatBrl(item.highlights ? typeof item.highlights == "boolean" ? 2 : item.highlights : 0)}</div>
+                    <button
+                      type={"button"}
+                      className={"h-4 w-4 rounded-md flex items-center justify-center text-blue-500 font-bold bg-gray-300 dark:bg-slate-600 outline-none hover:ring-1 ring-blue-500"}
+                      onClick={()=>editHighlights(item, "add")}>
+                      +
+                    </button>
                   </div>
                 </Td>
                 <Td align="right">
