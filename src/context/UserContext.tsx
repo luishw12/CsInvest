@@ -187,7 +187,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         marketUrl: e.marketUrl,
         realProfit: realProfit,
         percentage: percentage,
-        highlights: e.highlights,
+        highlights: e.highlights || 0,
         sold: !!e.sold,
         image: infos.image,
       };
