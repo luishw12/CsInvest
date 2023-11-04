@@ -210,7 +210,7 @@ export default function MonthSection({
               <p>Rendimento Médio</p>
               <p
                 className={`text-right ${
-                  investedAmount || profit ? "text-blue-600" : "text-black dark:text-slate-300"
+                  investedAmount || profit ? "text-blue-600 dark:text-sky-300" : "text-black dark:text-slate-300"
                 }`}
               >
                 {investedAmount || profit ? `${income}%` : "-"}
@@ -220,7 +220,7 @@ export default function MonthSection({
               <p>Rentabilidade</p>
               <p
                 className={`text-right ${
-                  investedAmount || profit ? "text-blue-600" : "text-black dark:text-slate-300"
+                  investedAmount || profit ? "text-blue-600 dark:text-sky-300" : "text-black dark:text-slate-300"
                 }`}
               >
                 {investedAmount || profit ? `${percentage}%` : "-"}

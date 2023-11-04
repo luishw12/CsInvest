@@ -94,7 +94,7 @@ export default function Simulation({ setOpen, open}: ModalConfig) {
                   <p
                     className={
                       percentage > 0
-                        ? "text-blue-500"
+                        ? "text-blue-500 dark:text-sky-300"
                         : percentage < 0
                         ? "text-red-500"
                         : ""
