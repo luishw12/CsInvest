@@ -1,5 +1,5 @@
 "use client";
-import {Button, Form} from "design-system-toshyro";
+import {Button, Form, Input} from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
 import {
@@ -18,7 +18,6 @@ import {
 import { useState } from "react";
 import { CgSpinnerTwo } from "react-icons/cg";
 import {useUser} from "@/context/UserContext";
-import InputCs from "@/components/inputs/Input";
 // @ts-ignore
 import InputMaskCs from "@/components/inputs/InputMask";
 
@@ -39,13 +38,13 @@ export default function Configurations({ setOpen, open }: ModalConfig) {
       <ModalLayout title={"Configurações"} setOpen={setOpen}>
         <div className="p-5">
           <Form className="grid grid-cols-12 gap-5 min-w-[500px]">
-            <InputCs
+            <Input
               name={"name"}
               label="Nome"
               validation={{ required: "Este campo é obrigatório" }}
               defaultValue={user.displayName!}
             />
-            <InputCs
+            <Input
               name={"email"}
               label="Email"
               validation={{ required: "Este campo é obrigatório" }}
@@ -71,7 +70,7 @@ export default function Configurations({ setOpen, open }: ModalConfig) {
                 %
               </div>
             </div>
-            <InputCs
+            <Input
               name={"sheets"}
               label="Link Planilha"
               defaultValue={userDb.sheets}

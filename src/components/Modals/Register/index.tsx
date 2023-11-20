@@ -1,9 +1,8 @@
 "use client";
-import {Form, Button} from "design-system-toshyro";
+import {Form, Button, Input} from "design-system-toshyro";
 
 import { ModalRegister } from "../interfaces";
 import {useUser} from "@/context/UserContext";
-import InputCs from "@/components/inputs/Input";
 
 export default function ModalRegister({
   open,
@@ -20,24 +19,24 @@ export default function ModalRegister({
           Cadastrar Item
         </h2>
 
-        <InputCs
+        <Input
           name={"name"}
           label="Nome do item"
           width="col-span-12"
         />
-        <InputCs
+        <Input
           name={"marketUrl"}
           label="Link da skin"
           width="col-span-12"
         />
-        <InputCs
+        <Input
           name={"buyPrice"}
           label="Valor da compra"
           type="number"
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
-        <InputCs
+        <Input
           name={"sellPrice"}
           label="Valor da Venda"
           type="number"

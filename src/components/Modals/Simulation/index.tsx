@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form } from "design-system-toshyro";
+import { Button, Form, Input } from "design-system-toshyro";
 import ModalLayout from "../_Layout";
 import { ModalConfig } from "../interfaces";
 import React, { useEffect, useState } from "react";
@@ -8,7 +8,6 @@ import { DocumentData, collection, onSnapshot } from "firebase/firestore";
 import { CgSpinnerTwo } from "react-icons/cg";
 import { db } from "../../../../firebase/firebaseConfig";
 import {useUser} from "@/context/UserContext";
-import InputCs from "@/components/inputs/Input";
 import {toast} from "react-toastify";
 
 export default function Simulation({ setOpen, open}: ModalConfig) {
@@ -47,12 +46,12 @@ export default function Simulation({ setOpen, open}: ModalConfig) {
           <Form className="grid grid-cols-12 gap-5 min-w-[500px]">
             {info ? (
               <>
-                <InputCs
+                <Input
                   name={"buyPrice"}
                   label="Valor da compra"
                   width="col-span-6"
                 />
-                <InputCs
+                <Input
                   name={"sellPrice"}
                   label="Valor da venda"
                   width="col-span-6"
