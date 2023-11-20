@@ -97,7 +97,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
   useEffect(() => {
     // @ts-ignore
-    setTheme(localStorage.getItem("theme"))
+    setTheme(localStorage.getItem("theme") || "light")
     onAuthStateChanged(auth, (user) => {
       setUser(user);
     });

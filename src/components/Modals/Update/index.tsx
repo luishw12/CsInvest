@@ -1,9 +1,8 @@
 "use client";
-import {Form, Button} from "design-system-toshyro";
+import {Form, Button, Input} from "design-system-toshyro";
 
 import { ModalUpdate } from "../interfaces";
 import {useUser} from "@/context/UserContext";
-import InputCs from "@/components/inputs/Input";
 
 export default function ModalUpdate({
   open,
@@ -24,19 +23,19 @@ export default function ModalUpdate({
           Editar Item
         </h2>
 
-        <InputCs
+        <Input
           name={"name"}
           label="Nome do item"
           defaultValue={dataItem.name}
           width="col-span-12"
         />
-        <InputCs
+        <Input
           name={"marketUrl"}
           label="Link da skin"
           defaultValue={dataItem.marketUrl}
           width="col-span-12"
         />
-        <InputCs
+        <Input
           name={"buyPrice"}
           label="Valor da compra"
           type="number"
@@ -44,7 +43,7 @@ export default function ModalUpdate({
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
-        <InputCs
+        <Input
           name={"sellPrice"}
           label="Valor da Venda"
           type="number"
@@ -52,8 +51,8 @@ export default function ModalUpdate({
           validation={{ required: "Este campo é obrigatório" }}
           width="col-span-6"
         />
-        <InputCs name="highlights" hidden defaultValue={dataItem.highlights} />
-        <InputCs name="sold" hidden defaultValue={dataItem.sold} />
+        <Input name="highlights" hidden defaultValue={dataItem.highlights} />
+        <Input name="sold" hidden defaultValue={dataItem.sold} />
         <div className="col-span-12 grid grid-cols-2 gap-5 mt-5">
           <Button
             onClick={() => {
