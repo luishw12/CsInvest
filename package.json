@@ -15,7 +15,7 @@
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
     "cheerio": "^1.0.0-rc.12",
-    "design-system-toshyro": "^0.2.3-beta",
+    "design-system-toshyro": "^0.2.31-beta",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "firebase": "^10.3.1",
