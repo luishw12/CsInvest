@@ -184,7 +184,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         name: infos.market_name,
         buyPrice: parseFloat(e.buyPrice),
         sellPrice: parseFloat(e.sellPrice),
-        marketUrl: e.marketUrl,
+        marketUrl: e.marketUrl || "",
         realProfit: realProfit,
         percentage: percentage,
         highlights: e.highlights || 0,
@@ -203,6 +203,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       toast.success("Item cadastrado com sucesso!");
 
     } catch (error) {
+      console.error(error);
       if (id) return toast.error("Erro ao editar o item.");
       toast.error("Erro ao adicionar o item.");
     }
