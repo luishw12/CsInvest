@@ -24,6 +24,7 @@ import {months} from "@/components/Calender";
 import {toast} from "react-toastify";
 import axios from "axios";
 import {SoldOptionsEnum} from "@/components/Modals/View/components/filter";
+import {PrismaClient} from "@prisma/client";
 
 type UserContextProps = {
   user: User | null;
@@ -67,6 +68,8 @@ type UserContextProviderProps = {
 };
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
+  const prisma = new PrismaClient();
+
   const [theme, setTheme] = useState<"light" | "dark">("light")
 
   const [user, setUser] = useState<User | null>(null);

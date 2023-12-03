@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.6.0",
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
+    "bcryptjs-react": "^2.4.6",
     "cheerio": "^1.0.0-rc.12",
     "design-system-toshyro": "^0.2.31-beta",
     "eslint": "8.49.0",
@@ -33,6 +35,7 @@
     "@types/lodash": "^4.14.200",
     "@types/url-parse": "^1.4.9",
     "@types/uuid": "^9.0.3",
+    "prisma": "^5.6.0",
     "tailwind-scrollbar": "^3.0.5"
   }
 }

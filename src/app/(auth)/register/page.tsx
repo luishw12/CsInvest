@@ -1,12 +1,12 @@
 "use client";
 import { Button, Form, Input, InputPass } from "design-system-toshyro";
 import Link from "next/link";
-import registerUser from "../../../../firebase/authentication/registerUser";
+import handleRegister from "@/app/(auth)/login/onSave";
 
 export default function Register() {
   return (
     <Form className="flex flex-col items-center gap-10">
-      <h1 className="text-white font-semibold text-3xl">Criar Conta</h1>
+      <h1 className="text-white font-semibold text-3xl">Criar conta</h1>
       <div className="grid grid-cols-12 w-[350px] gap-5">
         <Input name={"name"} placeholder="Nome" />
         <Input name={"email"} placeholder="E-mail" />
@@ -33,8 +33,4 @@ export default function Register() {
       </div>
     </Form>
   );
-}
-
-function handleRegister(e: any) {
-  registerUser(e.name, e.email, e.password, e.r_password);
 }
